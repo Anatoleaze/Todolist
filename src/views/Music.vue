@@ -19,7 +19,7 @@
         </div>
 
         <div class="text-center">
-          <ion-card-title class="text-2xl">Music</ion-card-title>
+          <ion-card-title class="text-2xl">Musique</ion-card-title>
           <ion-card-subtitle
             >{{ state.tasksMusic.length }} Tâches</ion-card-subtitle
           >

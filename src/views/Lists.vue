@@ -42,7 +42,7 @@
               </ion-icon>
             </ion-card-header>
             <ion-card-content>
-              <ion-card-title class="text-2xl">Music</ion-card-title>
+              <ion-card-title class="text-2xl">Musique</ion-card-title>
               <ion-card-subtitle
                 >{{ state.lengthOfMusicTasks }} Tâches</ion-card-subtitle
               >
@@ -72,7 +72,7 @@
               </ion-icon>
             </ion-card-header>
             <ion-card-content>
-              <ion-card-title class="text-2xl">Etudes</ion-card-title>
+              <ion-card-title class="text-2xl">Études</ion-card-title>
               <ion-card-subtitle
                 >{{ state.lengthOfStudyTasks }} Tâches</ion-card-subtitle
               >
