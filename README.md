@@ -33,8 +33,8 @@ Ce projet m’a permis de découvrir le fonctionnement de Vue et d’apprendre �
 # Cloner le projet
 
 ```bash
-git clone https://github.com/ton-utilisateur/vue-todolist.git
-cd vue-todolist
+git clone https://github.com/ton-utilisateur/Todolist.git
+cd Todolist
 ```
 # Installer les dépendances
 
