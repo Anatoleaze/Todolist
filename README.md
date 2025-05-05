@@ -4,7 +4,7 @@
 Ce projet m’a permis de découvrir le fonctionnement de Vue et d’apprendre à construire une application modulaire et réactive pour la gestion des tâches à accomplir.
 
 ---
-![Aperçu du jeu](image/GamePaint.png)
+![Aperçu du jeu](image/todolist.jpg)
 
 ---
 
