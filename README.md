@@ -29,22 +29,21 @@ Ce projet m’a permis de découvrir le fonctionnement de Vue et d’apprendre �
 
 ## 📦 Installation & Lancement
 
-
-# Cloner le projet
+### 1️⃣ Cloner le projet
 
 ```bash
 git clone https://github.com/ton-utilisateur/Todolist.git
 cd Todolist
 ```
-# Installer les dépendances
+### 2️⃣ Construire l’image Docker
 
 ```bash
-npm install
+docker build -t todolist-app .
 ```
-# Lancer le serveur de développement
+### 3️⃣ Lancer le conteneur
 
 ```bash
-npm run serve
+docker run -p 8080:80 todolist-app
 ```
-
-L’application sera accessible sur : http://localhost:8080
+📍 L'application sera accessible à l’adresse suivante :
+👉 http://localhost:8080

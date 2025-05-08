@@ -1,31 +1,42 @@
-# Specifies intentionally untracked files to ignore when using Git
-# http://git-scm.com/docs/gitignore
-
+# Fichiers temporaires
 *~
 *.sw[mnpcod]
-.tmp
 *.tmp
 *.tmp.*
-*.sublime-project
-*.sublime-workspace
+*.log
+npm-debug.log*
+log.txt
+
+# Fichiers de config de l'IDE
+/.idea
+/.vscode
+/.sublime-project
+/.sublime-workspace
+
+# Système d'exploitation
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
 $RECYCLE.BIN/
 
-*.log
-log.txt
-npm-debug.log*
-
-/.idea
-/.ionic
-/.sass-cache
-/.sourcemaps
-/.versions
-/.vscode
+# Fichiers et répertoires générés
 /coverage
 /dist
 /node_modules
 /platforms
 /plugins
 /www
+
+# Docker
+.docker/
+docker-compose.override.yml
+.dockerignore
+
+# Ionic/Capacitor
+/.ionic
+/.sass-cache
+/.sourcemaps
+/.versions
+
+# Cache de build de Tailwind CSS
+/.tailwind
