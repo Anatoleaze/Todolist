@@ -122,8 +122,8 @@ import {
 } from "@ionic/vue";
 import { close, notifications, document, grid } from "ionicons/icons";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import firebase from "@/firebase.ts";
-const db = firebase.firestore();
+import { db } from "@/firebase";
+
 export default defineComponent({
   components: {
     IonPage,

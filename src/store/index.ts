@@ -1,7 +1,8 @@
 import { createStore } from "vuex";
 
-import firebase from "@/firebase";
-const db = firebase.firestore();
+import { db } from "@/firebase"
+import { collection, addDoc, getDocs } from "firebase/firestore"
+
 const store = createStore({
   state: {
     tasks: Array<any>(),
