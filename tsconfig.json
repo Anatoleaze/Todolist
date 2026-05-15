@@ -1,4 +1,4 @@
-{ 
+{
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
@@ -11,14 +11,9 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": [
-      "webpack-env",
-      "jest"
-    ],
+    "types": [],
     "paths": {
-      "@/*": [
-        "app/src/*"
-      ]
+      "@/*": ["src/*"]
     },
     "lib": [
       "esnext",
@@ -28,11 +23,9 @@
     ]
   },
   "include": [
-    "app/src/**/*.ts",
-    "app/src/**/*.tsx",
-    "app/src/**/*.vue",
-    "app/tests/**/*.ts",
-    "app/tests/**/*.tsx"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
   ],
   "exclude": [
     "node_modules"

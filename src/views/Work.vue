@@ -4,24 +4,22 @@
       <ion-buttons slot="start">
         <ion-back-button default-href="/Lists"></ion-back-button>
       </ion-buttons>
-
-      <ion-icon :icon="ellipsisVertical" slot="end" class="text-2xl"></ion-icon>
     </ion-toolbar>
 
     <ion-content class="overflow-auto">
       <div class="flex flex-col justify-center items-center mt-2">
         <div class="text-center">
           <ion-icon
-            :icon="airplane"
+            :icon="briefcase"
             size="large"
-            class="text-green-400"
+            class="text-yellow-600"
           ></ion-icon>
         </div>
 
         <div class="text-center">
-          <ion-card-title class="text-2xl">Voyages</ion-card-title>
+          <ion-card-title class="text-2xl">Travail</ion-card-title>
           <ion-card-subtitle
-            >{{ state.tasksTravel.length }} Tâches</ion-card-subtitle
+            >{{ state.tasksWork.length }} Tâches</ion-card-subtitle
           >
         </div>
       </div>
@@ -190,8 +188,8 @@
         </ion-fab-button>
       </ion-fab>
 
-      <ion-modal :is-open="isOpenNewTask" :backdrop-dismiss="false">
-        <new-task @closeModal="isOpenNewTask = false"></new-task>
+     <ion-modal :is-open="isOpenNewTask" @didDismiss="isOpenNewTask = false">
+        <new-task @closeModal="isOpenNewTask = false" />
       </ion-modal>
     </div>
   </ion-page>
@@ -220,15 +218,15 @@ import {
   IonItemOption,
 } from "@ionic/vue";
 import { defineComponent, reactive, ref, onMounted, computed } from "vue";
-import { ellipsisVertical, airplane, add, trash } from "ionicons/icons";
+import { ellipsisVertical, briefcase, add, trash } from "ionicons/icons";
 import { useStore } from "vuex";
 import NewTask from "@/components/NewTask.vue";
 export default defineComponent({
   components: {
     IonPage,
-    IonToolbar,
+    IonToolbar /*IonButtons*/,
     IonIcon,
-    IonContent,
+    IonContent /*IonButton */,
     IonCardSubtitle,
     IonCardTitle,
     IonList,
@@ -251,24 +249,24 @@ export default defineComponent({
     const store = useStore();
     const isOpenNewTask = ref(false);
     const state = reactive({
-      tasksTravel: computed(() => {
-        return store.getters.tasksByCategory("Travel");
+      tasksWork: computed(() => {
+        return store.getters.tasksByCategory("Work");
       }),
       today: computed(() => {
-        return store.getters.today(state.tasksTravel);
+        return store.getters.today(state.tasksWork);
       }),
       late: computed(() => {
-        return store.getters.late(state.tasksTravel);
+        return store.getters.late(state.tasksWork);
       }),
       later: computed(() => {
-        return store.getters.later(state.tasksTravel);
+        return store.getters.later(state.tasksWork);
       }),
       done: computed(() => {
-        return store.getters.done(state.tasksTravel);
+        return store.getters.done(state.tasksWork);
       }),
     });
-    function getTasksTravel() {
-      store.commit("getTasks");
+    function getTasksWork() {
+      store.dispatch("getTasks");
     }
     function doneTask(item) {
       store.commit("doneTask", item);
@@ -282,19 +280,19 @@ export default defineComponent({
     onMounted(() => {
       // ...
       if (store.state.tasks.length == 0) {
-        getTasksTravel();
+        getTasksWork();
       }
     });
     return {
       state,
-      getTasksTravel,
-      store,
+      getTasksWork,
       doneTask,
       notDoneTask,
+      store,
       isOpenNewTask,
       deleteTask,
       ellipsisVertical,
-      airplane,
+      briefcase,
       add,
       trash,
     };

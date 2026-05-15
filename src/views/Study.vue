@@ -4,24 +4,22 @@
       <ion-buttons slot="start">
         <ion-back-button default-href="/Lists"></ion-back-button>
       </ion-buttons>
-
-      <ion-icon :icon="ellipsisVertical" slot="end" class="text-2xl"></ion-icon>
     </ion-toolbar>
 
     <ion-content class="overflow-auto">
       <div class="flex flex-col justify-center items-center mt-2">
         <div class="text-center">
           <ion-icon
-            :icon="briefcase"
+            :icon="book"
             size="large"
-            class="text-yellow-600"
+            class="text-indigo-400"
           ></ion-icon>
         </div>
 
         <div class="text-center">
-          <ion-card-title class="text-2xl">Travail</ion-card-title>
+          <ion-card-title class="text-2xl">Études</ion-card-title>
           <ion-card-subtitle
-            >{{ state.tasksWork.length }} Tâches</ion-card-subtitle
+            >{{ state.tasksStudy.length }} Tâches</ion-card-subtitle
           >
         </div>
       </div>
@@ -190,8 +188,8 @@
         </ion-fab-button>
       </ion-fab>
 
-      <ion-modal :is-open="isOpenNewTask" :backdrop-dismiss="false">
-        <new-task @closeModal="isOpenNewTask = false"></new-task>
+      <ion-modal :is-open="isOpenNewTask" @didDismiss="isOpenNewTask = false">
+        <new-task @closeModal="isOpenNewTask = false" />
       </ion-modal>
     </div>
   </ion-page>
@@ -212,15 +210,15 @@ import {
   IonCheckbox,
   IonButtons,
   IonBackButton,
-  IonModal,
-  IonFabButton,
   IonFab,
+  IonFabButton,
+  IonModal,
   IonItemSliding,
   IonItemOptions,
   IonItemOption,
 } from "@ionic/vue";
 import { defineComponent, reactive, ref, onMounted, computed } from "vue";
-import { ellipsisVertical, briefcase, add, trash } from "ionicons/icons";
+import { ellipsisVertical, book, add, trash } from "ionicons/icons";
 import { useStore } from "vuex";
 import NewTask from "@/components/NewTask.vue";
 export default defineComponent({
@@ -239,36 +237,35 @@ export default defineComponent({
     IonButtons,
     IonBackButton,
     NewTask,
-    IonModal,
-    IonFabButton,
     IonFab,
+    IonFabButton,
+    IonModal,
     IonItemSliding,
     IonItemOptions,
     IonItemOption,
   },
-
   setup() {
     const store = useStore();
     const isOpenNewTask = ref(false);
     const state = reactive({
-      tasksWork: computed(() => {
-        return store.getters.tasksByCategory("Work");
+      tasksStudy: computed(() => {
+        return store.getters.tasksByCategory("Study");
       }),
       today: computed(() => {
-        return store.getters.today(state.tasksWork);
+        return store.getters.today(state.tasksStudy);
       }),
       late: computed(() => {
-        return store.getters.late(state.tasksWork);
+        return store.getters.late(state.tasksStudy);
       }),
       later: computed(() => {
-        return store.getters.later(state.tasksWork);
+        return store.getters.later(state.tasksStudy);
       }),
       done: computed(() => {
-        return store.getters.done(state.tasksWork);
+        return store.getters.done(state.tasksStudy);
       }),
     });
-    function getTasksWork() {
-      store.commit("getTasks");
+    function getTasksStudy() {
+      store.dispatch("getTasks");
     }
     function doneTask(item) {
       store.commit("doneTask", item);
@@ -282,19 +279,20 @@ export default defineComponent({
     onMounted(() => {
       // ...
       if (store.state.tasks.length == 0) {
-        getTasksWork();
+        getTasksStudy();
       }
+      getTasksStudy();
     });
     return {
       state,
-      getTasksWork,
+      getTasksStudy,
       doneTask,
       notDoneTask,
       store,
       isOpenNewTask,
       deleteTask,
       ellipsisVertical,
-      briefcase,
+      book,
       add,
       trash,
     };

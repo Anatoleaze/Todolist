@@ -4,19 +4,23 @@
       <ion-buttons slot="start">
         <ion-back-button default-href="/Lists"></ion-back-button>
       </ion-buttons>
-
-      <ion-icon :icon="ellipsisVertical" slot="end" class="text-2xl"></ion-icon>
     </ion-toolbar>
 
     <ion-content class="overflow-auto">
       <div class="flex flex-col justify-center items-center mt-2">
         <div class="text-center">
-          <ion-icon :icon="clipboard" size="large" color="primary"></ion-icon>
+          <ion-icon
+            :icon="football"
+            size="large"
+            class="text-gray-900"
+          ></ion-icon>
         </div>
 
         <div class="text-center">
-          <ion-card-title class="text-2xl">Tout</ion-card-title>
-          <ion-card-subtitle>{{ state.tasks.length }} Tâches</ion-card-subtitle>
+          <ion-card-title class="text-2xl">Sport</ion-card-title>
+          <ion-card-subtitle
+            >{{ state.tasksSport.length }} Tâches</ion-card-subtitle
+          >
         </div>
       </div>
 
@@ -40,14 +44,12 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-
             <ion-item detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
                 <p style="color:red">{{ item.dueDate }}</p>
               </ion-label>
             </ion-item>
-
             <ion-item-options side="end">
               <ion-item-option
                 @click="doneTask(item)"
@@ -59,7 +61,6 @@
             </ion-item-options>
           </ion-item-sliding>
         </ion-list>
-
         <ion-list>
           <ion-list-header>
             <ion-label
@@ -99,7 +100,7 @@
         <ion-list>
           <ion-list-header>
             <ion-label
-              >Plus Tard
+              >Plus tard
               <span class="text-gray-600 text-base">{{
                 state.later.length
               }}</span></ion-label
@@ -187,84 +188,86 @@
         </ion-fab-button>
       </ion-fab>
 
-      <ion-modal :is-open="isOpenNewTask" :backdrop-dismiss="false">
-        <new-task @closeModal="isOpenNewTask = false"></new-task>
+      <ion-modal :is-open="isOpenNewTask" @didDismiss="isOpenNewTask = false">
+        <new-task @closeModal="isOpenNewTask = false" />
       </ion-modal>
     </div>
   </ion-page>
 </template>
 
 <script>
-import { defineComponent, reactive, ref, computed, onMounted } from "vue";
 import {
   IonPage,
   IonToolbar,
-  IonButtons,
-  IonBackButton,
   IonIcon,
   IonContent,
-  IonCardTitle,
   IonCardSubtitle,
+  IonCardTitle,
+  IonList,
   IonListHeader,
-  IonItemSliding,
-  IonItemOptions,
-  IonItemOption,
+  IonItem,
   IonLabel,
   IonCheckbox,
-  IonList,
-  IonItem,
+  IonButtons,
+  IonBackButton,
   IonFab,
   IonFabButton,
   IonModal,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
 } from "@ionic/vue";
-import { ellipsisVertical, clipboard, trash, add } from "ionicons/icons";
+import { defineComponent, reactive, ref, onMounted, computed } from "vue";
+import { ellipsisVertical, add, trash, football } from "ionicons/icons";
 import NewTask from "@/components/NewTask.vue";
 import { useStore } from "vuex";
 export default defineComponent({
   components: {
     IonPage,
-    IonToolbar,
+    IonToolbar /*IonButtons*/,
+    IonIcon,
+    IonContent /*IonButton */,
+    IonCardSubtitle,
+    IonCardTitle,
+    IonList,
+    IonListHeader,
+    IonItem,
+    IonLabel,
+    IonCheckbox,
     IonButtons,
     IonBackButton,
-    IonIcon,
-    IonContent,
-    IonCardTitle,
-    IonCardSubtitle,
-    IonListHeader,
+    IonFab,
+    IonFabButton,
+    NewTask,
+    IonModal,
     IonItemSliding,
     IonItemOptions,
     IonItemOption,
-    IonLabel,
-    IonCheckbox,
-    IonList,
-    IonItem,
-    IonFab,
-    IonFabButton,
-    IonModal,
-    NewTask,
   },
+
   setup() {
-    const isOpenNewTask = ref(false);
     const store = useStore();
+    const isOpenNewTask = ref(false);
     const state = reactive({
-      tasks: computed(() => {
-        return store.state.tasks;
+      tasksSport: computed(() => {
+        return store.getters.tasksByCategory("Sport");
       }),
+
       today: computed(() => {
-        return store.getters.today(state.tasks);
+        return store.getters.today(state.tasksSport);
       }),
       late: computed(() => {
-        return store.getters.late(state.tasks);
+        return store.getters.late(state.tasksSport);
       }),
       later: computed(() => {
-        return store.getters.later(state.tasks);
+        return store.getters.later(state.tasksSport);
       }),
       done: computed(() => {
-        return store.getters.done(state.tasks);
+        return store.getters.done(state.tasksSport);
       }),
     });
-    function getTasks() {
-      store.commit("getTasks");
+    function getTasksSport() {
+      store.dispatch("getTasks");
     }
     function doneTask(item) {
       store.commit("doneTask", item);
@@ -276,23 +279,23 @@ export default defineComponent({
       store.commit("deleteTask", item);
     }
     onMounted(() => {
+      // ...
       if (store.state.tasks.length == 0) {
-        getTasks();
+        getTasksSport();
       }
-      getTasks();
     });
     return {
-      isOpenNewTask,
-      store,
-      getTasks,
       state,
+      getTasksSport,
+      store,
       doneTask,
       notDoneTask,
+      isOpenNewTask,
       deleteTask,
       ellipsisVertical,
-      clipboard,
-      trash,
       add,
+      trash,
+      football,
     };
   },
 });

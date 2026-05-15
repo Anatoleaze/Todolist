@@ -12,7 +12,7 @@ import "@ionic/vue/css/normalize.css";
 import "@ionic/vue/css/structure.css";
 import "@ionic/vue/css/typography.css";
 
-/* Optional CSS utils that can be commented out */
+/* Optional CSS utils */
 import "@ionic/vue/css/padding.css";
 import "@ionic/vue/css/float-elements.css";
 import "@ionic/vue/css/text-alignment.css";
@@ -24,15 +24,36 @@ import "@ionic/vue/css/display.css";
 import "./theme/variables.css";
 
 /* Tailwindcss */
-import "../public/assets/css/style.css";
+import "./assets/css/style.css";
 
 import store from "./store/index";
 
-const app = createApp(App)
-  .use(IonicVue)
-  .use(router)
-  .use(store);
+import { auth } from "./firebase";
+import { signInAnonymously } from "firebase/auth";
 
-router.isReady().then(() => {
-  app.mount("#app");
-});
+
+const app = createApp(App);
+
+app.use(IonicVue);
+app.use(router);
+app.use(store);
+
+// 🔥 Connexion anonyme Firebase
+signInAnonymously(auth)
+  .then(() => {
+    console.log("Firebase anonymous auth success");
+
+    router.isReady().then(() => {
+      app.mount("#app");
+    });
+
+    router.afterEach(() => {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+    });
+
+  })
+  .catch((error) => {
+    console.error("Firebase auth error:", error);
+  }); 

@@ -4,8 +4,6 @@
       <ion-buttons slot="start">
         <ion-back-button default-href="/Lists"></ion-back-button>
       </ion-buttons>
-
-      <ion-icon :icon="ellipsisVertical" slot="end" class="text-2xl"></ion-icon>
     </ion-toolbar>
 
     <ion-content class="overflow-auto">
@@ -42,10 +40,10 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p style="color:red">{{ item.dueDate }}</p>
+                <p style="color:red">{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
@@ -78,10 +76,10 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p>{{ item.dueDate }}</p>
+                <p>{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
@@ -114,10 +112,10 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p>{{ item.dueDate }}</p>
+                <p>{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
@@ -150,20 +148,20 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true">
               <ion-label>
                 <h2 style="color:#3490dc">
                   <s>{{ item.task }}</s>
                 </h2>
                 <p>
-                  <s>{{ item.dueDate }}</s>
+                  <s>{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</s>
                 </p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
               <ion-item-option
                 @click="notDoneTask(item)"
-                color="white"
+                color="light"
                 expandable
               >
                 <ion-checkbox :checked="item.done"></ion-checkbox>
@@ -186,9 +184,10 @@
         </ion-fab-button>
       </ion-fab>
 
-      <ion-modal :is-open="isOpenNewTask" :backdrop-dismiss="false">
-        <new-task @closeModal="isOpenNewTask = false"></new-task>
+      <ion-modal :is-open="isOpenNewTask" @didDismiss="isOpenNewTask = false">
+        <new-task @closeModal="isOpenNewTask = false" />
       </ion-modal>
+
     </div>
   </ion-page>
 </template>
@@ -264,7 +263,7 @@ export default defineComponent({
       }),
     });
     function getTasksHome() {
-      store.commit("getTasks");
+      store.dispatch("getTasks");
     }
     function doneTask(item) {
       store.commit("doneTask", item);
@@ -276,7 +275,7 @@ export default defineComponent({
       store.commit("deleteTask", item);
     }
     onMounted(() => {
-      if (store.state.tasks.length == 0) {
+      if (store.state.tasks.length === 0) {
         getTasksHome();
       }
     });

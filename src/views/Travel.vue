@@ -4,24 +4,22 @@
       <ion-buttons slot="start">
         <ion-back-button default-href="/Lists"></ion-back-button>
       </ion-buttons>
-
-      <ion-icon :icon="ellipsisVertical" slot="end" class="text-2xl"></ion-icon>
     </ion-toolbar>
 
     <ion-content class="overflow-auto">
       <div class="flex flex-col justify-center items-center mt-2">
         <div class="text-center">
           <ion-icon
-            :icon="headset"
+            :icon="airplane"
             size="large"
-            class="text-red-400"
+            class="text-green-400"
           ></ion-icon>
         </div>
 
         <div class="text-center">
-          <ion-card-title class="text-2xl">Musique</ion-card-title>
+          <ion-card-title class="text-2xl">Voyages</ion-card-title>
           <ion-card-subtitle
-            >{{ state.tasksMusic.length }} Tâches</ion-card-subtitle
+            >{{ state.tasksTravel.length }} Tâches</ion-card-subtitle
           >
         </div>
       </div>
@@ -190,85 +188,85 @@
         </ion-fab-button>
       </ion-fab>
 
-      <ion-modal :is-open="isOpenNewTask" :backdrop-dismiss="false">
-        <new-task @closeModal="isOpenNewTask = false"></new-task>
+      <ion-modal :is-open="isOpenNewTask" @didDismiss="isOpenNewTask = false">
+        <new-task @closeModal="isOpenNewTask = false" />
       </ion-modal>
     </div>
   </ion-page>
 </template>
 
 <script>
-import { defineComponent, onMounted, reactive, ref, computed } from "vue";
 import {
   IonPage,
   IonToolbar,
-  IonButtons,
-  IonBackButton,
   IonIcon,
   IonContent,
-  IonCardTitle,
   IonCardSubtitle,
+  IonCardTitle,
+  IonList,
   IonListHeader,
+  IonItem,
+  IonLabel,
+  IonCheckbox,
+  IonButtons,
+  IonBackButton,
+  IonModal,
+  IonFabButton,
+  IonFab,
   IonItemSliding,
   IonItemOptions,
   IonItemOption,
-  IonLabel,
-  IonCheckbox,
-  IonList,
-  IonItem,
-  IonFab,
-  IonFabButton,
-  IonModal,
 } from "@ionic/vue";
-import { ellipsisVertical, headset, trash, add } from "ionicons/icons";
-import NewTask from "@/components/NewTask.vue";
+import { defineComponent, reactive, ref, onMounted, computed } from "vue";
+import { ellipsisVertical, airplane, add, trash } from "ionicons/icons";
 import { useStore } from "vuex";
+import NewTask from "@/components/NewTask.vue";
 export default defineComponent({
   components: {
     IonPage,
     IonToolbar,
-    IonButtons,
-    IonBackButton,
     IonIcon,
     IonContent,
-    IonCardTitle,
     IonCardSubtitle,
+    IonCardTitle,
+    IonList,
     IonListHeader,
+    IonItem,
+    IonLabel,
+    IonCheckbox,
+    IonButtons,
+    IonBackButton,
+    NewTask,
+    IonModal,
+    IonFabButton,
+    IonFab,
     IonItemSliding,
     IonItemOptions,
     IonItemOption,
-    IonLabel,
-    IonCheckbox,
-    IonList,
-    IonItem,
-    IonFab,
-    IonFabButton,
-    IonModal,
-    NewTask,
   },
 
   setup() {
-    const isOpenNewTask = ref(false);
     const store = useStore();
+    const isOpenNewTask = ref(false);
     const state = reactive({
-      tasksMusic: computed(() => {
-        return store.getters.tasksByCategory("Music");
+      tasksTravel: computed(() => {
+        return store.getters.tasksByCategory("Travel");
       }),
       today: computed(() => {
-        return store.getters.today(state.tasksMusic);
+        return store.getters.today(state.tasksTravel);
       }),
       late: computed(() => {
-        return store.getters.late(state.tasksMusic);
+        return store.getters.late(state.tasksTravel);
       }),
       later: computed(() => {
-        return store.getters.later(state.tasksMusic);
+        return store.getters.later(state.tasksTravel);
       }),
       done: computed(() => {
-        return store.getters.done(state.tasksMusic);
+        return store.getters.done(state.tasksTravel);
       }),
     });
-    function getTasksMusic() {
-      store.commit("getTasks");
+    function getTasksTravel() {
+      store.dispatch("getTasks");
     }
     function doneTask(item) {
       store.commit("doneTask", item);
@@ -280,22 +278,23 @@ export default defineComponent({
       store.commit("deleteTask", item);
     }
     onMounted(() => {
+      // ...
       if (store.state.tasks.length == 0) {
-        getTasksMusic();
+        getTasksTravel();
       }
     });
     return {
-      isOpenNewTask,
-      store,
       state,
-      getTasksMusic,
+      getTasksTravel,
+      store,
       doneTask,
       notDoneTask,
+      isOpenNewTask,
       deleteTask,
       ellipsisVertical,
-      headset,
-      trash,
+      airplane,
       add,
+      trash,
     };
   },
 });

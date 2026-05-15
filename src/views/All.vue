@@ -5,95 +5,72 @@
         <ion-back-button default-href="/Lists"></ion-back-button>
       </ion-buttons>
 
-      <ion-icon :icon="ellipsisVertical" slot="end" class="text-2xl"></ion-icon>
+     
     </ion-toolbar>
 
     <ion-content class="overflow-auto">
       <div class="flex flex-col justify-center items-center mt-2">
         <div class="text-center">
-          <ion-icon
-            :icon="book"
-            size="large"
-            class="text-indigo-400"
-          ></ion-icon>
+          <ion-icon :icon="clipboard" size="large" color="primary"></ion-icon>
         </div>
 
         <div class="text-center">
-          <ion-card-title class="text-2xl">Études</ion-card-title>
-          <ion-card-subtitle
-            >{{ state.tasksStudy.length }} Tâches</ion-card-subtitle
-          >
+          <ion-card-title class="text-2xl">Tout</ion-card-title>
+          <ion-card-subtitle>{{ state.tasks.length }} Tâches</ion-card-subtitle>
         </div>
       </div>
 
       <div>
         <ion-list>
           <ion-list-header>
-            <ion-label
-              >En retard
+            <ion-label>En retard
               <span class="text-gray-600 text-base">{{
                 state.late.length
-              }}</span></ion-label
-            >
+              }}</span></ion-label>
           </ion-list-header>
           <ion-item-sliding v-for="item in state.late" :key="item.id">
             <ion-item-options side="start">
-              <ion-item-option
-                @click="deleteTask(item)"
-                color="danger"
-                expandable
-              >
+              <ion-item-option @click="deleteTask(item)" color="danger" expandable>
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+
+            <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p style="color:red">{{ item.dueDate }}</p>
+                <p style="color:red">{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</p>
               </ion-label>
             </ion-item>
+
             <ion-item-options side="end">
-              <ion-item-option
-                @click="doneTask(item)"
-                color="primary"
-                expandable
-              >
+              <ion-item-option @click="doneTask(item)" color="primary" expandable>
                 <ion-checkbox :checked="item.done"></ion-checkbox>
               </ion-item-option>
             </ion-item-options>
           </ion-item-sliding>
         </ion-list>
+
         <ion-list>
           <ion-list-header>
-            <ion-label
-              >Aujourd'hui
+            <ion-label>Aujourd'hui
               <span class="text-gray-600 text-base">{{
                 state.today.length
-              }}</span></ion-label
-            >
+              }}</span></ion-label>
           </ion-list-header>
           <ion-item-sliding v-for="item in state.today" :key="item.id">
             <ion-item-options side="start">
-              <ion-item-option
-                @click="deleteTask(item)"
-                color="danger"
-                expandable
-              >
+              <ion-item-option @click="deleteTask(item)" color="danger" expandable>
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p>{{ item.dueDate }}</p>
+                <p>{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
-              <ion-item-option
-                @click="doneTask(item)"
-                color="primary"
-                expandable
-              >
+              <ion-item-option @click="doneTask(item)" color="primary" expandable>
                 <ion-checkbox :checked="item.done"></ion-checkbox>
               </ion-item-option>
             </ion-item-options>
@@ -101,35 +78,25 @@
         </ion-list>
         <ion-list>
           <ion-list-header>
-            <ion-label
-              >Plus tard
+            <ion-label>Plus Tard
               <span class="text-gray-600 text-base">{{
                 state.later.length
-              }}</span></ion-label
-            >
+              }}</span></ion-label>
           </ion-list-header>
           <ion-item-sliding v-for="item in state.later" :key="item.id">
             <ion-item-options side="start">
-              <ion-item-option
-                @click="deleteTask(item)"
-                color="danger"
-                expandable
-              >
+              <ion-item-option @click="deleteTask(item)" color="danger" expandable>
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p>{{ item.dueDate }}</p>
+                <p>{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
-              <ion-item-option
-                @click="doneTask(item)"
-                color="primary"
-                expandable
-              >
+              <ion-item-option @click="doneTask(item)" color="primary" expandable>
                 <ion-checkbox :checked="item.done"></ion-checkbox>
               </ion-item-option>
             </ion-item-options>
@@ -137,39 +104,29 @@
         </ion-list>
         <ion-list>
           <ion-list-header>
-            <ion-label
-              >Terminé
+            <ion-label>Terminé
               <span class="text-gray-600 text-base">{{
                 state.done.length
-              }}</span></ion-label
-            >
+              }}</span></ion-label>
           </ion-list-header>
           <ion-item-sliding v-for="item in state.done" :key="item.id">
             <ion-item-options side="start">
-              <ion-item-option
-                @click="deleteTask(item)"
-                color="danger"
-                expandable
-              >
+              <ion-item-option @click="deleteTask(item)" color="danger" expandable>
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true">
               <ion-label>
                 <h2 style="color:#3490dc">
                   <s>{{ item.task }}</s>
                 </h2>
                 <p>
-                  <s>{{ item.dueDate }}</s>
+                  <s>{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</s>
                 </p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
-              <ion-item-option
-                @click="notDoneTask(item)"
-                color="white"
-                expandable
-              >
+              <ion-item-option @click="notDoneTask(item)" color="light" expandable>
                 <ion-checkbox :checked="item.done"></ion-checkbox>
               </ion-item-option>
             </ion-item-options>
@@ -179,95 +136,91 @@
     </ion-content>
 
     <div>
-      <ion-fab
-        @click="isOpenNewTask = true"
-        vertical="bottom"
-        horizontal="end"
-        slot="fixed"
-      >
+      <ion-fab @click="isOpenNewTask = true" vertical="bottom" horizontal="end" slot="fixed">
         <ion-fab-button>
           <ion-icon :icon="add"></ion-icon>
         </ion-fab-button>
       </ion-fab>
 
-      <ion-modal :is-open="isOpenNewTask" :backdrop-dismiss="false">
-        <new-task @closeModal="isOpenNewTask = false"></new-task>
+      <ion-modal :is-open="isOpenNewTask" @didDismiss="isOpenNewTask = false">
+        <new-task @closeModal="isOpenNewTask = false" />
       </ion-modal>
+
     </div>
   </ion-page>
 </template>
 
 <script>
+import { defineComponent, reactive, ref, computed, onMounted } from "vue";
 import {
   IonPage,
   IonToolbar,
-  IonIcon,
-  IonContent,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonList,
-  IonListHeader,
-  IonItem,
-  IonLabel,
-  IonCheckbox,
   IonButtons,
   IonBackButton,
-  IonFab,
-  IonFabButton,
-  IonModal,
+  IonIcon,
+  IonContent,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonListHeader,
   IonItemSliding,
   IonItemOptions,
   IonItemOption,
+  IonLabel,
+  IonCheckbox,
+  IonList,
+  IonItem,
+  IonFab,
+  IonFabButton,
+  IonModal,
 } from "@ionic/vue";
-import { defineComponent, reactive, ref, onMounted, computed } from "vue";
-import { ellipsisVertical, book, add, trash } from "ionicons/icons";
-import { useStore } from "vuex";
+import { ellipsisVertical, clipboard, trash, add } from "ionicons/icons";
 import NewTask from "@/components/NewTask.vue";
+import { useStore } from "vuex";
 export default defineComponent({
   components: {
     IonPage,
-    IonToolbar /*IonButtons*/,
-    IonIcon,
-    IonContent /*IonButton */,
-    IonCardSubtitle,
-    IonCardTitle,
-    IonList,
-    IonListHeader,
-    IonItem,
-    IonLabel,
-    IonCheckbox,
+    IonToolbar,
     IonButtons,
     IonBackButton,
-    NewTask,
-    IonFab,
-    IonFabButton,
-    IonModal,
+    IonIcon,
+    IonContent,
+    IonCardTitle,
+    IonCardSubtitle,
+    IonListHeader,
     IonItemSliding,
     IonItemOptions,
     IonItemOption,
+    IonLabel,
+    IonCheckbox,
+    IonList,
+    IonItem,
+    IonFab,
+    IonFabButton,
+    IonModal,
+    NewTask,
   },
   setup() {
-    const store = useStore();
     const isOpenNewTask = ref(false);
+    const store = useStore();
     const state = reactive({
-      tasksStudy: computed(() => {
-        return store.getters.tasksByCategory("Study");
+      tasks: computed(() => {
+        return store.state.tasks;
       }),
       today: computed(() => {
-        return store.getters.today(state.tasksStudy);
+        return store.getters.today(state.tasks);
       }),
       late: computed(() => {
-        return store.getters.late(state.tasksStudy);
+        return store.getters.late(state.tasks);
       }),
       later: computed(() => {
-        return store.getters.later(state.tasksStudy);
+        return store.getters.later(state.tasks);
       }),
       done: computed(() => {
-        return store.getters.done(state.tasksStudy);
+        return store.getters.done(state.tasks);
       }),
     });
-    function getTasksStudy() {
-      store.commit("getTasks");
+    function getTasks() {
+      store.dispatch("getTasks");
     }
     function doneTask(item) {
       store.commit("doneTask", item);
@@ -279,24 +232,22 @@ export default defineComponent({
       store.commit("deleteTask", item);
     }
     onMounted(() => {
-      // ...
-      if (store.state.tasks.length == 0) {
-        getTasksStudy();
+      if (store.state.tasks.length === 0) {
+        getTasks();
       }
-      getTasksStudy();
     });
     return {
+      isOpenNewTask,
+      store,
+      getTasks,
       state,
-      getTasksStudy,
       doneTask,
       notDoneTask,
-      store,
-      isOpenNewTask,
       deleteTask,
       ellipsisVertical,
-      book,
-      add,
+      clipboard,
       trash,
+      add,
     };
   },
 });
