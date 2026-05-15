@@ -1,74 +1,79 @@
 <template>
   <ion-page>
-    <div class="mt-2">
-      <h2 class="text-center text-2xl font-semibold">Nouvelle tâche</h2>
-    </div>
-
-    <Form @submit="addTask()" class="flex flex-col justify-center h-full">
-      <div>
-        <ion-item>
-          <Field name="taskField" v-slot="{ field }">
-            <ion-input :model-value="field.value" @ionInput="field.onChange($event.target.value)" />
-          </Field>
-        </ion-item>
-
-        <ion-item lines="none">
-          <ErrorMessage v-slot="{ message }" name="taskField">
-            <ion-text color="danger" v-if="message">{{ message }}</ion-text>
-          </ErrorMessage>
-        </ion-item>
+    <ion-content class="ion-padding">
+      <div class="mt-2">
+        <h2 class="text-center text-2xl font-semibold">Nouvelle tâche</h2>
       </div>
 
-      <div>
-        <ion-item>
-          <ion-icon :icon="notifications" color="primary" slot="start"></ion-icon>
-          <Field v-slot="{ field }" name="duedateField" :rules="isRequired">
-            <ion-datetime v-model="dueDate" presentation="date-time" />
-          </Field>
-        </ion-item>
-        <ion-item lines="none">
-          <ErrorMessage v-slot="{ message }" name="duedateField">
-            <ion-text color="danger" v-if="message">{{ message }}</ion-text>
-          </ErrorMessage>
-        </ion-item>
+      <Form @submit="addTask()" class="flex flex-col justify-center h-full">
+        <div>
+          <ion-item>
 
-        <ion-item>
-          <ion-icon :icon="document" color="primary" slot="start"></ion-icon>
-          <ion-textarea v-model="note" placeholder="Précisez cette tâche."></ion-textarea>
-        </ion-item>
+            <ion-label>Nom</ion-label>
+            <Field name="taskField" v-slot="{ field }">
+              <ion-input :model-value="field.value" @ionInput="field.onChange($event.target.value)" />
+            </Field>
+          </ion-item>
 
-        <ion-item>
-          <ion-icon :icon="grid" color="primary" slot="start"></ion-icon>
-          <ion-label>Categorie</ion-label>
+          <ion-item lines="none">
+            <ErrorMessage v-slot="{ message }" name="taskField">
+              <ion-text color="danger" v-if="message">{{ message }}</ion-text>
+            </ErrorMessage>
+          </ion-item>
+        </div>
 
-          <Field :rules="isRequired" v-slot="{ field }" name="categoryField">
-            <ion-select v-bind="field" v-model="category" label="Catégorie" placeholder="Sélectionner une catégorie">
-              <ion-select-option value="Work">Travail</ion-select-option>
-              <ion-select-option value="Music">Music</ion-select-option>
-              <ion-select-option value="Travel">Voyage</ion-select-option>
-              <ion-select-option value="Study">Etude</ion-select-option>
-              <ion-select-option value="Home">Maison</ion-select-option>
-              <ion-select-option value="Shopping">Shopping</ion-select-option>
-              <ion-select-option value="Sport">Sport</ion-select-option>
-            </ion-select>
-          </Field>
-        </ion-item>
-        <ion-item lines="none">
-          <ErrorMessage v-slot="{ message }" name="categoryField">
-            <ion-text color="danger" v-if="message">{{ message }}</ion-text>
-          </ErrorMessage>
-        </ion-item>
-      </div>
+        <div>
+          <ion-item>
+            <ion-icon :icon="notifications" color="primary" slot="start"></ion-icon>
+            <Field name="duedateField" :rules="isRequired" v-slot="{ field, handleChange, value }">
+              <ion-datetime :model-value="value" @ionChange="handleChange($event.detail.value)" presentation="date-time"
+                prefer-wheel="true" />
+            </Field>
+          </ion-item>
+          <ion-item lines="none">
+            <ErrorMessage v-slot="{ message }" name="duedateField">
+              <ion-text color="danger" v-if="message">{{ message }}</ion-text>
+            </ErrorMessage>
+          </ion-item>
 
-      <div class="mt-8">
-        <ion-button expand="block" type="submit">Créer la tâche</ion-button>
-      </div>
-    </Form>
+          <ion-item>
+            <ion-icon :icon="document" color="primary" slot="start"></ion-icon>
+            <ion-textarea v-model="note" placeholder="Précisez cette tâche."></ion-textarea>
+          </ion-item>
 
-    <ion-fab vertical="top" horizontal="end" slot="fixed" class="cursor-pointer" @click="closeModal">
+          <ion-item>
+            <ion-icon :icon="grid" color="primary" slot="start"></ion-icon>
+            <ion-label>Catégorie</ion-label>
 
-      <ion-icon :icon="close" class="text-3xl"></ion-icon>
-    </ion-fab>
+            <Field :rules="isRequired" v-slot="{ field }" name="categoryField">
+              <ion-select v-bind="field" v-model="category" placeholder="Sélectionner une catégorie">
+                <ion-select-option value="Work">Travail</ion-select-option>
+                <ion-select-option value="Music">Music</ion-select-option>
+                <ion-select-option value="Travel">Voyage</ion-select-option>
+                <ion-select-option value="Study">Etude</ion-select-option>
+                <ion-select-option value="Home">Maison</ion-select-option>
+                <ion-select-option value="Shopping">Shopping</ion-select-option>
+                <ion-select-option value="Sport">Sport</ion-select-option>
+              </ion-select>
+            </Field>
+          </ion-item>
+          <ion-item lines="none">
+            <ErrorMessage v-slot="{ message }" name="categoryField">
+              <ion-text color="danger" v-if="message">{{ message }}</ion-text>
+            </ErrorMessage>
+          </ion-item>
+        </div>
+
+        <div class="mt-8">
+          <ion-button expand="block" type="submit">Créer la tâche</ion-button>
+        </div>
+      </Form>
+
+      <ion-fab vertical="top" horizontal="end" slot="fixed" class="cursor-pointer" @click="closeModal">
+
+        <ion-icon :icon="close" class="text-3xl"></ion-icon>
+      </ion-fab>
+    </ion-content>
   </ion-page>
 </template>
 <script>
