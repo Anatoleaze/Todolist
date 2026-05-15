@@ -41,7 +41,7 @@
               </ion-item-option>
             </ion-item-options>
 
-            <ion-item detail="true">
+            <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
                 <p style="color:red">{{ item.dueDate }}</p>
@@ -79,7 +79,7 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
                 <p>{{ item.dueDate }}</p>
@@ -115,7 +115,7 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
                 <p>{{ item.dueDate }}</p>
@@ -151,7 +151,7 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true">
               <ion-label>
                 <h2 style="color:#3490dc">
                   <s>{{ item.task }}</s>
@@ -164,7 +164,7 @@
             <ion-item-options side="end">
               <ion-item-option
                 @click="notDoneTask(item)"
-                color="white"
+                color="light"
                 expandable
               >
                 <ion-checkbox :checked="item.done"></ion-checkbox>
@@ -187,9 +187,12 @@
         </ion-fab-button>
       </ion-fab>
 
-      <ion-modal :is-open="isOpenNewTask" :backdrop-dismiss="false">
-        <new-task @closeModal="isOpenNewTask = false"></new-task>
-      </ion-modal>
+      <ion-modal
+        :is-open="isOpenNewTask"
+        :backdrop-dismiss="false"
+        @didDismiss="isOpenNewTask = false"
+      ></ion-modal>
+
     </div>
   </ion-page>
 </template>
@@ -276,10 +279,9 @@ export default defineComponent({
       store.commit("deleteTask", item);
     }
     onMounted(() => {
-      if (store.state.tasks.length == 0) {
+      if (store.state.tasks.length === 0) {
         getTasks();
       }
-      getTasks();
     });
     return {
       isOpenNewTask,

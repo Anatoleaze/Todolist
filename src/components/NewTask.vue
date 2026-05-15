@@ -40,11 +40,15 @@
             <ion-datetime
               v-bind="field"
               v-model="dueDate"
-              display-format="MMM DD, YYYY HH:mm"
-              display-timezone="utc"
-              value="2020-11-11T14:51:56.646+01:00"
-              max="2055-12-31"
-            ></ion-datetime>
+              presentation="date-time"
+              locale="fr-FR"
+              :prefer-wheel="false"
+              show-default-buttons="true"
+              done-text="Valider"
+              cancel-text="Annuler"
+              max="2055-12-31T23:59:59"
+            >
+            </ion-datetime>
           </Field>
         </ion-item>
         <ion-item lines="none">
@@ -69,6 +73,7 @@
             <ion-select
               v-bind="field"
               v-model="category"
+              label="Catégorie"
               placeholder="Sélectionner une catégorie"
             >
               <ion-select-option value="Work">Travail</ion-select-option>
@@ -98,7 +103,7 @@
       horizontal="end"
       slot="fixed"
       class="cursor-pointer"
-      @click="$emit('close-modal')"
+      @click="$emit('closeModal')"
     >
       <ion-icon :icon="close" class="text-3xl"></ion-icon>
     </ion-fab>
@@ -122,7 +127,7 @@ import {
 } from "@ionic/vue";
 import { close, notifications, document, grid } from "ionicons/icons";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { db } from "@/firebase";
+import { collection, addDoc } from "firebase/firestore"
 
 export default defineComponent({
   components: {
@@ -143,7 +148,7 @@ export default defineComponent({
     ErrorMessage,
   },
 
-  setup() {
+  setup(props, { emit }) {
     const task = ref("");
     const dueDate = ref("");
     const note = ref("");
@@ -155,26 +160,25 @@ export default defineComponent({
       return true;
     };
 
-    function addTask() {
-      db.collection("tasks")
-        .add({
+    async function addTask() {
+      try {
+        await addDoc(collection(db, "tasks"), {
           task: task.value,
           note: note.value,
           dueDate: dueDate.value,
           category: category.value,
           done: false,
         })
-        .then(() => {
-          task.value = "";
-          dueDate.value = "";
-          note.value = "";
-          category.value = "";
-          this.$emit("close-modal");
-          console.log("Document successfully written !");
-        })
-        .catch((error) => {
-          console.log("Error writing document: ", error);
-        });
+
+        task.value = ""
+        dueDate.value = ""
+        note.value = ""
+        category.value = ""
+
+        console.log("Document successfully written!")
+      } catch (error) {
+        console.log("Error writing document: ", error)
+      }
     }
     return {
       isRequired,

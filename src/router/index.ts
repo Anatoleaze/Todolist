@@ -13,15 +13,15 @@ import Shopping from '../views/Shopping.vue';
 
 const routes: Array<RouteRecordRaw> = [
   { path: '/', redirect: '/Lists' },
-  { path: '/Lists', name: 'Lists', component: Lists },
-  { path: '/Maison', name: 'Home', component: Home },
-  { path: '/Tous', name: 'All', component: All },
-  { path: '/Travail', name: 'Work', component: Work },
-  { path: '/Music', name: 'Music', component: Music },
-  { path: '/Voyage', name: 'Travel', component: Travel },
-  { path: '/Etudes', name: 'Study', component: Study },
-  { path: '/Sport', name: 'Sport', component: Sport },
-  { path: '/Shopping', name: 'Shopping', component: Shopping }
+  { path: '/lists', name: 'Lists', component: Lists },
+  { path: '/maison', name: 'Home', component: Home },
+  { path: '/tous', name: 'All', component: All },
+  { path: '/travail', name: 'Work', component: Work },
+  { path: '/music', name: 'Music', component: Music },
+  { path: '/voyage', name: 'Travel', component: Travel },
+  { path: '/etudes', name: 'Study', component: Study },
+  { path: '/sport', name: 'Sport', component: Sport },
+  { path: '/shopping', name: 'Shopping', component: Shopping }
 ];
 
 const router = createRouter({
