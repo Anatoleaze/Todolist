@@ -13,9 +13,7 @@
             </ion-card-header>
             <ion-card-content>
               <ion-card-title class="text-2xl">Tout</ion-card-title>
-              <ion-card-subtitle
-                >{{ state.lengthOfAllTasks }} Tâches</ion-card-subtitle
-              >
+              <ion-card-subtitle>{{ lengthOfAllTasks }} Tâches</ion-card-subtitle>
             </ion-card-content>
           </router-link>
         </ion-card>
@@ -28,9 +26,7 @@
             </ion-card-header>
             <ion-card-content>
               <ion-card-title class="text-2xl">Travail</ion-card-title>
-              <ion-card-subtitle
-                >{{ state.lengthOfWorkTasks }} Tâches</ion-card-subtitle
-              >
+              <ion-card-subtitle>{{ lengthOfWorkTasks }} Tâches</ion-card-subtitle>
             </ion-card-content>
           </router-link>
         </ion-card>
@@ -43,9 +39,7 @@
             </ion-card-header>
             <ion-card-content>
               <ion-card-title class="text-2xl">Musique</ion-card-title>
-              <ion-card-subtitle
-                >{{ state.lengthOfMusicTasks }} Tâches</ion-card-subtitle
-              >
+              <ion-card-subtitle>{{ lengthOfMusicTasks }} Tâches</ion-card-subtitle>
             </ion-card-content>
           </router-link>
         </ion-card>
@@ -58,9 +52,7 @@
             </ion-card-header>
             <ion-card-content>
               <ion-card-title class="text-2xl">Voyage</ion-card-title>
-              <ion-card-subtitle
-                >{{ state.lengthOfTravelTasks }} Tâches</ion-card-subtitle
-              >
+              <ion-card-subtitle>{{ lengthOfTravelTasks }} Tâches</ion-card-subtitle>
             </ion-card-content>
           </router-link>
         </ion-card>
@@ -73,9 +65,7 @@
             </ion-card-header>
             <ion-card-content>
               <ion-card-title class="text-2xl">Études</ion-card-title>
-              <ion-card-subtitle
-                >{{ state.lengthOfStudyTasks }} Tâches</ion-card-subtitle
-              >
+              <ion-card-subtitle>{{ lengthOfStudyTasks }} Tâches</ion-card-subtitle>
             </ion-card-content>
           </router-link>
         </ion-card>
@@ -88,9 +78,7 @@
             </ion-card-header>
             <ion-card-content>
               <ion-card-title class="text-2xl">Maison</ion-card-title>
-              <ion-card-subtitle
-                >{{ state.lengthOfHomeTasks }} Tâches</ion-card-subtitle
-              >
+              <ion-card-subtitle>{{ lengthOfHomeTasks }} Tâches</ion-card-subtitle>
             </ion-card-content>
           </router-link>
         </ion-card>
@@ -103,9 +91,7 @@
             </ion-card-header>
             <ion-card-content>
               <ion-card-title class="text-2xl">Sport</ion-card-title>
-              <ion-card-subtitle
-                >{{ state.lengthOfSportTasks }} Tâches</ion-card-subtitle
-              >
+              <ion-card-subtitle>{{ lengthOfSportTasks }} Tâches</ion-card-subtitle>
             </ion-card-content>
           </router-link>
         </ion-card>
@@ -118,27 +104,20 @@
             </ion-card-header>
             <ion-card-content>
               <ion-card-title class="text-2xl">Shopping</ion-card-title>
-              <ion-card-subtitle
-                >{{ state.lengthOfShoppingTasks }} Tâches</ion-card-subtitle
-              >
+              <ion-card-subtitle>{{ lengthOfShoppingTasks }} Tâches</ion-card-subtitle>
             </ion-card-content>
           </router-link>
         </ion-card>
       </div>
 
       <div>
-        <ion-fab
-          @click="isOpenNewTask = true"
-          vertical="bottom"
-          horizontal="end"
-          slot="fixed"
-        >
+        <ion-fab @click="isOpenNewTask = true" vertical="bottom" horizontal="end" slot="fixed">
           <ion-fab-button>
             <ion-icon :icon="add"></ion-icon>
           </ion-fab-button>
         </ion-fab>
-        <ion-modal :is-open="isOpenNewTask" :backdrop-dismiss="false">
-          <new-task @closeModal="isOpenNewTask = false"></new-task>
+        <ion-modal :is-open="isOpenNewTask" @didDismiss="isOpenNewTask = false">
+          <new-task @closeModal="isOpenNewTask = false" />
         </ion-modal>
       </div>
     </div>
@@ -189,35 +168,20 @@ export default defineComponent({
   setup() {
     const isOpenNewTask = ref(false);
     const store = useStore();
-    const state = reactive({
-      lengthOfAllTasks: computed(() => {
-        return store.state.tasks.length;
-      }),
-      lengthOfWorkTasks: computed(() => {
-        return store.getters.lengthTasksByCategory("Work");
-      }),
-      lengthOfMusicTasks: computed(() => {
-        return store.getters.lengthTasksByCategory("Music");
-      }),
-      lengthOfTravelTasks: computed(() => {
-        return store.getters.lengthTasksByCategory("Travel");
-      }),
-      lengthOfStudyTasks: computed(() => {
-        return store.getters.lengthTasksByCategory("Study");
-      }),
-      lengthOfHomeTasks: computed(() => {
-        return store.getters.lengthTasksByCategory("Home");
-      }),
-      lengthOfSportTasks: computed(() => {
-        return store.getters.lengthTasksByCategory("Sport");
-      }),
-      lengthOfShoppingTasks: computed(() => {
-        return store.getters.lengthTasksByCategory("Shopping");
-      }),
-    });
+
+    const lengthOfAllTasks = computed(() => store.state.tasks?.length ?? 0);
+    const lengthOfWorkTasks = computed(() => store.getters.lengthTasksByCategory("Work"))
+    const lengthOfMusicTasks = computed(() => store.getters.lengthTasksByCategory("Music"))
+    const lengthOfTravelTasks = computed(() => store.getters.lengthTasksByCategory("Travel"))
+    const lengthOfStudyTasks = computed(() => store.getters.lengthTasksByCategory("Study"))
+    const lengthOfHomeTasks = computed(() => store.getters.lengthTasksByCategory("Home"))
+    const lengthOfSportTasks = computed(() => store.getters.lengthTasksByCategory("Sport"))
+    const lengthOfShoppingTasks = computed(() => store.getters.lengthTasksByCategory("Shopping"))
+
     function getTasks() {
-      store.commit("getTasks");
+      store.dispatch("getTasks");
     }
+
     onMounted(() => {
       if (store.state.tasks.length == 0) {
         getTasks();
@@ -226,7 +190,7 @@ export default defineComponent({
     return {
       isOpenNewTask,
       store,
-      state,
+      //state,
       getTasks,
       clipboard,
       briefcase,
@@ -237,6 +201,14 @@ export default defineComponent({
       football,
       cart,
       add,
+      lengthOfAllTasks,
+      lengthOfWorkTasks,
+      lengthOfMusicTasks,
+      lengthOfTravelTasks,
+      lengthOfStudyTasks,
+      lengthOfHomeTasks,
+      lengthOfSportTasks,
+      lengthOfShoppingTasks,
     };
   },
 });

@@ -190,8 +190,8 @@
         </ion-fab-button>
       </ion-fab>
 
-      <ion-modal :is-open="isOpenNewTask" :backdrop-dismiss="false">
-        <new-task @closeModal="isOpenNewTask = false"></new-task>
+      <ion-modal :is-open="isOpenNewTask" @didDismiss="isOpenNewTask = false">
+        <new-task @closeModal="isOpenNewTask = false" />
       </ion-modal>
     </div>
   </ion-page>
@@ -268,7 +268,7 @@ export default defineComponent({
       }),
     });
     function getTasksTravel() {
-      store.commit("getTasks");
+      store.dispatch("getTasks");
     }
     function doneTask(item) {
       store.commit("doneTask", item);

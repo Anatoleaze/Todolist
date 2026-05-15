@@ -7,18 +7,8 @@
     <Form @submit="addTask()" class="flex flex-col justify-center h-full">
       <div>
         <ion-item>
-          <Field
-            v-slot="{ field }"
-            name="taskField"
-            :rules="isRequired"
-            v-model="task"
-          >
-            <ion-input
-              v-bind="field"
-              type="text"
-              name="taskField"
-              placeholder="Qu'avez-vous prévu ?"
-            ></ion-input>
+          <Field name="taskField" v-slot="{ field }">
+            <ion-input :model-value="field.value" @ionInput="field.onChange($event.target.value)" />
           </Field>
         </ion-item>
 
@@ -31,24 +21,9 @@
 
       <div>
         <ion-item>
-          <ion-icon
-            :icon="notifications"
-            color="primary"
-            slot="start"
-          ></ion-icon>
+          <ion-icon :icon="notifications" color="primary" slot="start"></ion-icon>
           <Field v-slot="{ field }" name="duedateField" :rules="isRequired">
-            <ion-datetime
-              v-bind="field"
-              v-model="dueDate"
-              presentation="date-time"
-              locale="fr-FR"
-              :prefer-wheel="false"
-              show-default-buttons="true"
-              done-text="Valider"
-              cancel-text="Annuler"
-              max="2055-12-31T23:59:59"
-            >
-            </ion-datetime>
+            <ion-datetime v-model="dueDate" presentation="date-time" />
           </Field>
         </ion-item>
         <ion-item lines="none">
@@ -59,10 +34,7 @@
 
         <ion-item>
           <ion-icon :icon="document" color="primary" slot="start"></ion-icon>
-          <ion-textarea
-            v-model="note"
-            placeholder="Précisez cette tâche."
-          ></ion-textarea>
+          <ion-textarea v-model="note" placeholder="Précisez cette tâche."></ion-textarea>
         </ion-item>
 
         <ion-item>
@@ -70,12 +42,7 @@
           <ion-label>Categorie</ion-label>
 
           <Field :rules="isRequired" v-slot="{ field }" name="categoryField">
-            <ion-select
-              v-bind="field"
-              v-model="category"
-              label="Catégorie"
-              placeholder="Sélectionner une catégorie"
-            >
+            <ion-select v-bind="field" v-model="category" label="Catégorie" placeholder="Sélectionner une catégorie">
               <ion-select-option value="Work">Travail</ion-select-option>
               <ion-select-option value="Music">Music</ion-select-option>
               <ion-select-option value="Travel">Voyage</ion-select-option>
@@ -98,13 +65,8 @@
       </div>
     </Form>
 
-    <ion-fab
-      vertical="top"
-      horizontal="end"
-      slot="fixed"
-      class="cursor-pointer"
-      @click="$emit('closeModal')"
-    >
+    <ion-fab vertical="top" horizontal="end" slot="fixed" class="cursor-pointer" @click="closeModal">
+
       <ion-icon :icon="close" class="text-3xl"></ion-icon>
     </ion-fab>
   </ion-page>
@@ -127,7 +89,8 @@ import {
 } from "@ionic/vue";
 import { close, notifications, document, grid } from "ionicons/icons";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { collection, addDoc } from "firebase/firestore"
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "@/firebase";
 
 export default defineComponent({
   components: {
@@ -150,7 +113,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const task = ref("");
-    const dueDate = ref("");
+    const dueDate = ref(new Date().toISOString());
     const note = ref("");
     const category = ref("");
     const isRequired = (value) => {
@@ -165,13 +128,13 @@ export default defineComponent({
         await addDoc(collection(db, "tasks"), {
           task: task.value,
           note: note.value,
-          dueDate: dueDate.value,
+          dueDate: dueDate.value || new Date().toISOString(),
           category: category.value,
           done: false,
         })
 
         task.value = ""
-        dueDate.value = ""
+        dueDate.value = new Date().toISOString()
         note.value = ""
         category.value = ""
 
@@ -179,7 +142,12 @@ export default defineComponent({
       } catch (error) {
         console.log("Error writing document: ", error)
       }
+    };
+
+    function closeModal() {
+      emit("closeModal");
     }
+
     return {
       isRequired,
       task,
@@ -187,10 +155,11 @@ export default defineComponent({
       note,
       category,
       addTask,
-      close,
       notifications,
       document,
       grid,
+      close,
+      closeModal
     };
   },
 });
