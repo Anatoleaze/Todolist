@@ -12,6 +12,7 @@ log.txt
 /.vscode
 /.sublime-project
 /.sublime-workspace
+/.env
 
 # Système d'exploitation
 .DS_Store
