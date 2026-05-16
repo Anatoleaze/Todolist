@@ -47,7 +47,7 @@
             <ion-item detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p style="color:red">{{ item.dueDate }}</p>
+                <p style="color:red">{{ formatDateShort(item.dueDate) }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
@@ -83,7 +83,7 @@
             <ion-item detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p>{{ item.dueDate }}</p>
+                <p>{{ formatDateShort(item.dueDate) }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
@@ -119,7 +119,7 @@
             <ion-item detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p>{{ item.dueDate }}</p>
+                <p>{{ formatDateShort(item.dueDate) }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
@@ -158,7 +158,7 @@
                   <s>{{ item.task }}</s>
                 </h2>
                 <p>
-                  <s>{{ item.dueDate }}</s>
+                  <s>{{ formatDateShort(item.dueDate) }}</s>
                 </p>
               </ion-label>
             </ion-item>
@@ -218,6 +218,7 @@ import {
   IonItemOption,
 } from "@ionic/vue";
 import { defineComponent, reactive, ref, onMounted, computed } from "vue";
+import { formatDateShort } from "@/utils/formatDate";
 import { ellipsisVertical, briefcase, add, trash } from "ionicons/icons";
 import { useStore } from "vuex";
 import NewTask from "@/components/NewTask.vue";
@@ -294,7 +295,8 @@ export default defineComponent({
       ellipsisVertical,
       briefcase,
       add,
-      trash,
+      trash,      formatDateShort,
+
     };
   },
 });

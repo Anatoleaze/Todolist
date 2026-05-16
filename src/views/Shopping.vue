@@ -33,7 +33,7 @@
                         <ion-item detail="true">
                             <ion-label>
                                 <h2>{{ item.task }}</h2>
-                                <p style="color:red">{{ item.dueDate }}</p>
+                                <p style="color:red">{{ formatDateShort(item.dueDate) }}</p>
                             </ion-label>
                         </ion-item>
                         <ion-item-options side="end">
@@ -58,7 +58,7 @@
                         <ion-item detail="true">
                             <ion-label>
                                 <h2>{{ item.task }}</h2>
-                                <p>{{ item.dueDate }}</p>
+                                <p>{{ formatDateShort(item.dueDate) }}</p>
                             </ion-label>
                         </ion-item>
                         <ion-item-options side="end">
@@ -83,7 +83,7 @@
                         <ion-item detail="true">
                             <ion-label>
                                 <h2>{{ item.task }}</h2>
-                                <p>{{ item.dueDate }}</p>
+                                <p>{{ formatDateShort(item.dueDate) }}</p>
                             </ion-label>
                         </ion-item>
                         <ion-item-options side="end">
@@ -108,7 +108,7 @@
                         <ion-item detail="true">
                             <ion-label>
                                 <h2 style="color:#3490dc"><s>{{ item.task }}</s></h2>
-                                <p><s>{{ item.dueDate }}</s></p>
+                                <p><s>{{ formatDateShort(item.dueDate) }}</s></p>
                             </ion-label>
                         </ion-item>
                         <ion-item-options side="end">
@@ -138,6 +138,7 @@
 
 <script>
 import { defineComponent, ref, reactive, computed, onMounted } from "vue";
+import { formatDateShort } from "@/utils/formatDate";
 import {
     IonPage,
     IonToolbar,
@@ -232,6 +233,7 @@ export default defineComponent({
             cart,
             trash,
             add,
+            formatDateShort,
         };
     },
 });
