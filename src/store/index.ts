@@ -87,11 +87,21 @@ const store = createStore({
 
         snapshot.forEach((docSnap) => {
           const data = docSnap.data()
+          let dueDateValue = data.dueDate
+
+          if (dueDateValue && typeof dueDateValue.toDate === "function") {
+            dueDateValue = dueDateValue.toDate().toISOString()
+          } else if (dueDateValue instanceof Date) {
+            dueDateValue = dueDateValue.toISOString()
+          } else if (typeof dueDateValue === "string") {
+            const parsed = new Date(dueDateValue)
+            dueDateValue = isNaN(parsed.getTime()) ? dueDateValue : parsed.toISOString()
+          }
 
           tasks.push({
             id: docSnap.id,
             task: data.task,
-            dueDate: data.dueDate, // 👈 on garde brut (important)
+            dueDate: dueDateValue,
             category: data.category,
             note: data.note,
             done: data.done,

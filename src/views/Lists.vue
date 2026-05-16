@@ -190,8 +190,7 @@ export default defineComponent({
     return {
       isOpenNewTask,
       store,
-      //state,
-      getTasks,
+      //getTasks,
       clipboard,
       briefcase,
       headset,

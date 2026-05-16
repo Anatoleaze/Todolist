@@ -16,7 +16,7 @@
 
         <div class="text-center">
           <ion-card-title class="text-2xl">Tout</ion-card-title>
-          <ion-card-subtitle>{{ state.tasks.length }} Tâches</ion-card-subtitle>
+          <ion-card-subtitle>{{ tasks.length }} Tâches</ion-card-subtitle>
         </div>
       </div>
 
@@ -25,10 +25,10 @@
           <ion-list-header>
             <ion-label>En retard
               <span class="text-gray-600 text-base">{{
-                state.late.length
+                late.length
               }}</span></ion-label>
           </ion-list-header>
-          <ion-item-sliding v-for="item in state.late" :key="item.id">
+          <ion-item-sliding v-for="item in late" :key="item.id">
             <ion-item-options side="start">
               <ion-item-option @click="deleteTask(item)" color="danger" expandable>
                 <ion-icon :icon="trash" size="large"></ion-icon>
@@ -38,7 +38,7 @@
             <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p style="color:red">{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</p>
+                <p style="color:red">{{ formatDateShort(item.dueDate) }}</p>
               </ion-label>
             </ion-item>
 
@@ -54,10 +54,10 @@
           <ion-list-header>
             <ion-label>Aujourd'hui
               <span class="text-gray-600 text-base">{{
-                state.today.length
+                today.length
               }}</span></ion-label>
           </ion-list-header>
-          <ion-item-sliding v-for="item in state.today" :key="item.id">
+          <ion-item-sliding v-for="item in today" :key="item.id">
             <ion-item-options side="start">
               <ion-item-option @click="deleteTask(item)" color="danger" expandable>
                 <ion-icon :icon="trash" size="large"></ion-icon>
@@ -66,7 +66,7 @@
             <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p>{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</p>
+                <p>{{ formatDateShort(item.dueDate) }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
@@ -80,10 +80,10 @@
           <ion-list-header>
             <ion-label>Plus Tard
               <span class="text-gray-600 text-base">{{
-                state.later.length
+                later.length
               }}</span></ion-label>
           </ion-list-header>
-          <ion-item-sliding v-for="item in state.later" :key="item.id">
+          <ion-item-sliding v-for="item in later" :key="item.id">
             <ion-item-options side="start">
               <ion-item-option @click="deleteTask(item)" color="danger" expandable>
                 <ion-icon :icon="trash" size="large"></ion-icon>
@@ -92,7 +92,7 @@
             <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p>{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</p>
+                <p>{{ formatDateShort(item.dueDate) }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
@@ -106,10 +106,10 @@
           <ion-list-header>
             <ion-label>Terminé
               <span class="text-gray-600 text-base">{{
-                state.done.length
+                done.length
               }}</span></ion-label>
           </ion-list-header>
-          <ion-item-sliding v-for="item in state.done" :key="item.id">
+          <ion-item-sliding v-for="item in done" :key="item.id">
             <ion-item-options side="start">
               <ion-item-option @click="deleteTask(item)" color="danger" expandable>
                 <ion-icon :icon="trash" size="large"></ion-icon>
@@ -121,7 +121,7 @@
                   <s>{{ item.task }}</s>
                 </h2>
                 <p>
-                  <s>{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</s>
+                  <s>{{ formatDateShort(item.dueDate) }}</s>
                 </p>
               </ion-label>
             </ion-item>
@@ -152,6 +152,7 @@
 
 <script>
 import { defineComponent, reactive, ref, computed, onMounted } from "vue";
+import { formatDateShort } from "@/utils/formatDate";
 import {
   IonPage,
   IonToolbar,
@@ -202,34 +203,22 @@ export default defineComponent({
   setup() {
     const isOpenNewTask = ref(false);
     const store = useStore();
-    const state = reactive({
-      tasks: computed(() => {
-        return store.state.tasks;
-      }),
-      today: computed(() => {
-        return store.getters.today(state.tasks);
-      }),
-      late: computed(() => {
-        return store.getters.late(state.tasks);
-      }),
-      later: computed(() => {
-        return store.getters.later(state.tasks);
-      }),
-      done: computed(() => {
-        return store.getters.done(state.tasks);
-      }),
-    });
+    const tasks = computed(() => store.state.tasks);
+    const today = computed(() => store.getters.today(tasks.value));
+    const late = computed(() => store.getters.late(tasks.value));
+    const later = computed(() => store.getters.later(tasks.value));
+    const done = computed(() => store.getters.done(tasks.value));
     function getTasks() {
       store.dispatch("getTasks");
     }
     function doneTask(item) {
-      store.commit("doneTask", item);
+      store.dispatch("doneTask", item);
     }
     function notDoneTask(item) {
-      store.commit("notDoneTask", item);
+      store.dispatch("notDoneTask", item);
     }
     function deleteTask(item) {
-      store.commit("deleteTask", item);
+      store.dispatch("deleteTask", item);
     }
     onMounted(() => {
       if (store.state.tasks.length === 0) {
@@ -239,8 +228,12 @@ export default defineComponent({
     return {
       isOpenNewTask,
       store,
+      tasks,
+      today,
+      late,
+      later,
+      done,
       getTasks,
-      state,
       doneTask,
       notDoneTask,
       deleteTask,
@@ -248,6 +241,7 @@ export default defineComponent({
       clipboard,
       trash,
       add,
+      formatDateShort,
     };
   },
 });

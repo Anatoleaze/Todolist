@@ -15,7 +15,7 @@
         <div class="text-center">
           <ion-card-title class="text-2xl">Maison</ion-card-title>
           <ion-card-subtitle
-            >{{ state.tasksHome.length }} Tâches</ion-card-subtitle
+            >{{ tasksHome.length }} Tâches</ion-card-subtitle
           >
         </div>
       </div>
@@ -26,11 +26,11 @@
             <ion-label
               >En retard
               <span class="text-gray-600 text-base">{{
-                state.late.length
+                late.length
               }}</span></ion-label
             >
           </ion-list-header>
-          <ion-item-sliding v-for="item in state.late" :key="item.id">
+          <ion-item-sliding v-for="item in late" :key="item.id">
             <ion-item-options side="start">
               <ion-item-option
                 @click="deleteTask(item)"
@@ -43,7 +43,7 @@
             <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p style="color:red">{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</p>
+                <p style="color:red">{{ formatDateShort(item.dueDate) }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
@@ -62,11 +62,11 @@
             <ion-label
               >Aujourd'hui
               <span class="text-gray-600 text-base">{{
-                state.today.length
+                today.length
               }}</span></ion-label
             >
           </ion-list-header>
-          <ion-item-sliding v-for="item in state.today" :key="item.id">
+          <ion-item-sliding v-for="item in today" :key="item.id">
             <ion-item-options side="start">
               <ion-item-option
                 @click="deleteTask(item)"
@@ -79,7 +79,7 @@
             <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p>{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</p>
+                <p>{{ formatDateShort(item.dueDate) }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
@@ -98,11 +98,11 @@
             <ion-label
               >Plus tard
               <span class="text-gray-600 text-base">{{
-                state.later.length
+                later.length
               }}</span></ion-label
             >
           </ion-list-header>
-          <ion-item-sliding v-for="item in state.later" :key="item.id">
+          <ion-item-sliding v-for="item in later" :key="item.id">
             <ion-item-options side="start">
               <ion-item-option
                 @click="deleteTask(item)"
@@ -115,7 +115,7 @@
             <ion-item :detail="true">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p>{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</p>
+                <p>{{ formatDateShort(item.dueDate) }}</p>
               </ion-label>
             </ion-item>
             <ion-item-options side="end">
@@ -134,11 +134,11 @@
             <ion-label
               >Terminé
               <span class="text-gray-600 text-base">{{
-                state.done.length
+                done.length
               }}</span></ion-label
             >
           </ion-list-header>
-          <ion-item-sliding v-for="item in state.done" :key="item.id">
+          <ion-item-sliding v-for="item in done" :key="item.id">
             <ion-item-options side="start">
               <ion-item-option
                 @click="deleteTask(item)"
@@ -154,7 +154,7 @@
                   <s>{{ item.task }}</s>
                 </h2>
                 <p>
-                  <s>{{ new Date(item.dueDate).toLocaleString("fr-FR") }}</s>
+                  <s>{{ formatDateShort(item.dueDate) }}</s>
                 </p>
               </ion-label>
             </ion-item>
@@ -194,6 +194,7 @@
 
 <script>
 import { defineComponent, ref, reactive, computed, onMounted } from "vue";
+import { formatDateShort } from "@/utils/formatDate";
 import {
   IonPage,
   IonToolbar,
@@ -245,34 +246,22 @@ export default defineComponent({
   setup() {
     const isOpenNewTask = ref(false);
     const store = useStore();
-    const state = reactive({
-      tasksHome: computed(() => {
-        return store.getters.tasksByCategory("Home");
-      }),
-      today: computed(() => {
-        return store.getters.today(state.tasksHome);
-      }),
-      late: computed(() => {
-        return store.getters.late(state.tasksHome);
-      }),
-      later: computed(() => {
-        return store.getters.later(state.tasksHome);
-      }),
-      done: computed(() => {
-        return store.getters.done(state.tasksHome);
-      }),
-    });
+    const tasksHome = computed(() => store.getters.tasksByCategory("Home"));
+    const today = computed(() => store.getters.today(tasksHome.value));
+    const late = computed(() => store.getters.late(tasksHome.value));
+    const later = computed(() => store.getters.later(tasksHome.value));
+    const done = computed(() => store.getters.done(tasksHome.value));
     function getTasksHome() {
       store.dispatch("getTasks");
     }
     function doneTask(item) {
-      store.commit("doneTask", item);
+      store.dispatch("doneTask", item);
     }
     function notDoneTask(item) {
-      store.commit("notDoneTask", item);
+      store.dispatch("notDoneTask", item);
     }
     function deleteTask(item) {
-      store.commit("deleteTask", item);
+      store.dispatch("deleteTask", item);
     }
     onMounted(() => {
       if (store.state.tasks.length === 0) {
@@ -281,8 +270,12 @@ export default defineComponent({
     });
     return {
       isOpenNewTask,
+      tasksHome,
+      today,
+      late,
+      later,
+      done,
       store,
-      state,
       getTasksHome,
       doneTask,
       notDoneTask,
@@ -291,6 +284,7 @@ export default defineComponent({
       home,
       trash,
       add,
+      formatDateShort,
     };
   },
 });
