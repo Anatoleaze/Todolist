@@ -143,8 +143,18 @@
       </ion-fab>
 
       <ion-modal :is-open="isModalOpen" @didDismiss="closeModal">
-        <new-task v-if="!isDetailMode" @closeModal="closeModal" />
-        <task-detail v-else :task="selectedTask" @closeModal="closeModal" />
+        <new-task
+          v-if="!isDetailMode"
+          :edit-task="editTaskData"
+          @closeModal="closeModal"
+          @taskUpdated="onTaskUpdated"
+        />
+        <task-detail
+          v-else
+          :task="selectedTask"
+          @closeModal="closeModal"
+          @editTask="onEditTask"
+        />
       </ion-modal>
 
     </div>
@@ -207,6 +217,7 @@ export default defineComponent({
     const isModalOpen = ref(false);
     const isDetailMode = ref(false);
     const selectedTask = ref(null);
+    const editTaskData = ref(null);
     const todoStore = useTodoStore();
 
     const state = reactive({
@@ -229,6 +240,8 @@ export default defineComponent({
 
     function openCreateModal() {
       isDetailMode.value = false;
+      editTaskData.value = null;
+      selectedTask.value = null;
       isModalOpen.value = true;
     }
 
@@ -238,8 +251,21 @@ export default defineComponent({
       isModalOpen.value = true;
     }
 
+    function onEditTask(task) {
+      isDetailMode.value = false;
+      editTaskData.value = { ...task };
+      isModalOpen.value = true;
+    }
+
+    function onTaskUpdated() {
+      closeModal();
+    }
+
     function closeModal() {
+      editTaskData.value = null;
+      selectedTask.value = null;
       isModalOpen.value = false;
+      isDetailMode.value = false;
     }
 
     onMounted(() => {
@@ -251,6 +277,8 @@ export default defineComponent({
     function onModalDismiss() {
       isDetailMode.value = false;
       selectedTask.value = null;
+      editTaskData.value = null;
+      isModalOpen.value = false;
     }
 
     return {
@@ -265,6 +293,9 @@ export default defineComponent({
       isModalOpen,
       isDetailMode,
       selectedTask,
+      editTaskData,
+      onEditTask,
+      onTaskUpdated,
       ellipsisVertical,
       clipboard,
       trash,

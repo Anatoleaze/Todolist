@@ -5,10 +5,17 @@
       <div v-if="task" class="mt-2">
 
         <!-- Titre -->
-        <div class="margin-bottom-2">
-          <h2 class="text-center text-2xl font-semibold">
+
+        <div class="margin-bottom-2 flex items-center justify-center gap-2">
+          <h2 class="text-center text-2xl font-semibold m-0">
             {{ truncatedTaskName }}
           </h2>
+          <ion-icon
+            :icon="pencil"
+            class="text-xl cursor-pointer ml-2"
+            @click="editTask"
+            title="Modifier la tâche"
+          ></ion-icon>
         </div>
 
         <!-- Catégorie -->
@@ -91,6 +98,7 @@ import {
   grid,
   notifications,
   document,
+  pencil,
 } from "ionicons/icons";
 
 export default defineComponent({
@@ -136,8 +144,13 @@ export default defineComponent({
       return categoryMap[category] || category;
     };
 
+
     const closeModal = () => {
       emit("closeModal");
+    };
+
+    const editTask = () => {
+      emit("editTask", props.task);
     };
 
     return {
@@ -148,7 +161,9 @@ export default defineComponent({
       grid,
       notifications,
       document,
+      pencil,
       closeModal,
+      editTask,
     };
   },
 });
