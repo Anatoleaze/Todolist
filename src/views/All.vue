@@ -35,7 +35,7 @@
               </ion-item-option>
             </ion-item-options>
 
-            <ion-item :detail="true">
+            <ion-item :detail="true" @click="openTaskDetail(item)">
               <ion-label>
                 <h2>{{ item.task }}</h2>
                 <p style="color:red">{{ formatDateShort(item.dueDate) }}</p>
@@ -63,7 +63,7 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item :detail="true">
+            <ion-item :detail="true" @click="openTaskDetail(item)">
               <ion-label>
                 <h2>{{ item.task }}</h2>
                 <p>{{ formatDateShort(item.dueDate) }}</p>
@@ -89,7 +89,7 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item :detail="true">
+            <ion-item :detail="true" @click="openTaskDetail(item)">
               <ion-label>
                 <h2>{{ item.task }}</h2>
                 <p>{{ formatDateShort(item.dueDate) }}</p>
@@ -115,7 +115,7 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item :detail="true">
+            <ion-item :detail="true" @click="openTaskDetail(item)">
               <ion-label>
                 <h2 style="color:#3490dc">
                   <s>{{ item.task }}</s>
@@ -136,14 +136,15 @@
     </ion-content>
 
     <div>
-      <ion-fab @click="isOpenNewTask = true" vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab @click="openCreateModal" vertical="bottom" horizontal="end" slot="fixed">
         <ion-fab-button>
           <ion-icon :icon="add"></ion-icon>
         </ion-fab-button>
       </ion-fab>
 
-      <ion-modal :is-open="isOpenNewTask" @didDismiss="isOpenNewTask = false">
-        <new-task @closeModal="isOpenNewTask = false" />
+      <ion-modal :is-open="isModalOpen" @didDismiss="closeModal">
+        <new-task v-if="!isDetailMode" @closeModal="closeModal" />
+        <task-detail v-else :task="selectedTask" @closeModal="closeModal" />
       </ion-modal>
 
     </div>
@@ -176,7 +177,8 @@ import {
 } from "@ionic/vue";
 import { ellipsisVertical, clipboard, trash, add } from "ionicons/icons";
 import NewTask from "@/components/NewTask.vue";
-import { useStore } from "vuex";
+import TaskDetail from '@/components/TaskDetail.vue'
+import { useTodoStore } from '@/store/todoStore';
 export default defineComponent({
   components: {
     IonPage,
@@ -199,57 +201,75 @@ export default defineComponent({
     IonFabButton,
     IonModal,
     NewTask,
+    TaskDetail,
   },
   setup() {
-    const isOpenNewTask = ref(false);
-    const store = useStore();
+    const isModalOpen = ref(false);
+    const isDetailMode = ref(false);
+    const selectedTask = ref(null);
+    const todoStore = useTodoStore();
+
     const state = reactive({
-      tasks: computed(() => {
-        return store.state.tasks;
-      }),
-      today: computed(() => {
-        return store.getters.today(state.tasks);
-      }),
-      late: computed(() => {
-        return store.getters.late(state.tasks);
-      }),
-      later: computed(() => {
-        return store.getters.later(state.tasks);
-      }),
-      done: computed(() => {
-        return store.getters.done(state.tasks);
-      }),
+      tasks: computed(() => todoStore.tasks),
+      today: computed(() => todoStore.today(todoStore.tasks)),
+      late: computed(() => todoStore.late(todoStore.tasks)),
+      later: computed(() => todoStore.later(todoStore.tasks)),
+      done: computed(() => todoStore.done(todoStore.tasks)),
     });
-    function getTasks() {
-      store.dispatch("getTasks");
-    }
+
     function doneTask(item) {
-      store.commit("doneTask", item);
+      todoStore.doneTask(item);
     }
     function notDoneTask(item) {
-      store.commit("notDoneTask", item);
+      todoStore.notDoneTask(item);
     }
     function deleteTask(item) {
-      store.commit("deleteTask", item);
+      todoStore.deleteTask(item);
     }
+
+    function openCreateModal() {
+      isDetailMode.value = false;
+      isModalOpen.value = true;
+    }
+
+    function openTaskDetail(item) {
+      selectedTask.value = item;
+      isDetailMode.value = true;
+      isModalOpen.value = true;
+    }
+
+    function closeModal() {
+      isModalOpen.value = false;
+    }
+
     onMounted(() => {
-      if (store.state.tasks.length === 0) {
-        getTasks();
+      if (todoStore.tasks.length === 0) {
+        todoStore.getTasks();
       }
     });
+
+    function onModalDismiss() {
+      isDetailMode.value = false;
+      selectedTask.value = null;
+    }
+
     return {
-      isOpenNewTask,
-      store,
-      getTasks,
       state,
       doneTask,
       notDoneTask,
       deleteTask,
+      openCreateModal,
+      openTaskDetail,
+      closeModal,
+      onModalDismiss,
+      isModalOpen,
+      isDetailMode,
+      selectedTask,
       ellipsisVertical,
       clipboard,
       trash,
-      add,      formatDateShort,
-
+      add,
+      formatDateShort,
     };
   },
 });

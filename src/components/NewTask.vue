@@ -5,12 +5,11 @@
         <h2 class="text-center text-2xl font-semibold">Nouvelle tâche</h2>
       </div>
 
-      <Form @submit="addTask()" class="flex flex-col justify-center h-full">
+      <Form @submit="addTask" v-slot="{ values }" class="flex flex-col justify-center h-full">
         <div>
           <ion-item>
-
             <ion-label>Nom</ion-label>
-            <Field name="taskField" v-slot="{ field }">
+            <Field name="taskField" :rules="isRequired" v-slot="{ field }">
               <ion-input :model-value="field.value" @ionInput="field.onChange($event.target.value)" />
             </Field>
           </ion-item>
@@ -46,7 +45,7 @@
             <ion-label>Catégorie</ion-label>
 
             <Field :rules="isRequired" v-slot="{ field }" name="categoryField">
-              <ion-select v-bind="field" v-model="category" placeholder="Sélectionner une catégorie">
+              <ion-select v-bind="field" placeholder="Sélectionner une catégorie">
                 <ion-select-option value="Work">Travail</ion-select-option>
                 <ion-select-option value="Music">Music</ion-select-option>
                 <ion-select-option value="Travel">Voyage</ion-select-option>
@@ -70,12 +69,12 @@
       </Form>
 
       <ion-fab vertical="top" horizontal="end" slot="fixed" class="cursor-pointer" @click="closeModal">
-
         <ion-icon :icon="close" class="text-3xl"></ion-icon>
       </ion-fab>
     </ion-content>
   </ion-page>
 </template>
+
 <script>
 import { defineComponent, ref } from "vue";
 import {
@@ -116,11 +115,9 @@ export default defineComponent({
     ErrorMessage,
   },
 
+
   setup(props, { emit }) {
-    const task = ref("");
-    const dueDate = ref(new Date().toISOString());
     const note = ref("");
-    const category = ref("");
     const isRequired = (value) => {
       if (!value) {
         return "Ce champs est obligatoire";
@@ -128,26 +125,23 @@ export default defineComponent({
       return true;
     };
 
-    async function addTask() {
+    async function addTask(values) {
       try {
         await addDoc(collection(db, "tasks"), {
-          task: task.value,
+          task: values.taskField,
           note: note.value,
-          dueDate: dueDate.value || new Date().toISOString(),
-          category: category.value,
+          dueDate: values.duedateField || new Date().toISOString(),
+          category: values.categoryField,
           done: false,
-        })
+        });
 
-        task.value = ""
-        dueDate.value = new Date().toISOString()
-        note.value = ""
-        category.value = ""
-
-        console.log("Document successfully written!")
+        note.value = "";
+        console.log("Document successfully written!");
+        emit("closeModal");
       } catch (error) {
-        console.log("Error writing document: ", error)
+        console.log("Error writing document: ", error);
       }
-    };
+    }
 
     function closeModal() {
       emit("closeModal");
@@ -155,10 +149,7 @@ export default defineComponent({
 
     return {
       isRequired,
-      task,
-      dueDate,
       note,
-      category,
       addTask,
       notifications,
       document,

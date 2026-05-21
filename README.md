@@ -1,10 +1,12 @@
 # 📝 TodoList VueJS – Application de gestion de tâches
 
-**VueJS TodoList** est une application web de gestion de tâches développée avec **Vue.js**, **Ionic Vue** et **Firebase**.
+**VueJS TodoList** est une application web de gestion de tâches développée avec **Vue.js**, **Ionic Vue**, **Pinia** et **Firebase**.
+
 
 Ce projet m’a permis d’apprendre à construire une application moderne, modulaire et réactive avec :
 - Vue 3
 - Vite
+- Pinia (gestion d’état)
 - Firebase
 - Docker
 - Ionic Vue
@@ -31,6 +33,7 @@ Ce projet m’a permis d’apprendre à construire une application moderne, modu
 
 - **Frontend** : Vue.js 3
 - **UI Framework** : Ionic Vue
+- **Gestion d’état** : Pinia
 - **Backend / Base de données** : Firebase
 - **Bundler** : Vite
 - **Conteneurisation** : Docker & Nginx
@@ -92,6 +95,13 @@ VITE_FIREBASE_APP_ID=
 ```
 
 ---
+
+
+---
+
+## 📦 Migration Vuex → Pinia
+
+> Depuis la version 2026, l’application utilise **Pinia** pour la gestion d’état globale à la place de Vuex. L’ancien store Vuex a été supprimé et tout le code utilise désormais Pinia (voir `src/store/todoStore.ts`).
 
 # 🐳 Lancement avec Docker
 

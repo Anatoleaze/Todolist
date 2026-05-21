@@ -44,7 +44,7 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true" @click="openTaskDetail(item)">
               <ion-label>
                 <h2>{{ item.task }}</h2>
                 <p style="color:red">{{ formatDateShort(item.dueDate) }}</p>
@@ -80,7 +80,7 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true" @click="openTaskDetail(item)">
               <ion-label>
                 <h2>{{ item.task }}</h2>
                 <p>{{ formatDateShort(item.dueDate) }}</p>
@@ -116,7 +116,7 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true" @click="openTaskDetail(item)">
               <ion-label>
                 <h2>{{ item.task }}</h2>
                 <p>{{ formatDateShort(item.dueDate) }}</p>
@@ -152,7 +152,7 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+            <ion-item :detail="true" @click="openTaskDetail(item)">
               <ion-label>
                 <h2 style="color:#3490dc">
                   <s>{{ item.task }}</s>
@@ -178,7 +178,7 @@
 
     <div>
       <ion-fab
-        @click="isOpenNewTask = true"
+        @click="openCreateModal"
         vertical="bottom"
         horizontal="end"
         slot="fixed"
@@ -188,8 +188,9 @@
         </ion-fab-button>
       </ion-fab>
 
-      <ion-modal :is-open="isOpenNewTask" @didDismiss="isOpenNewTask = false">
-        <new-task @closeModal="isOpenNewTask = false" />
+      <ion-modal :is-open="isModalOpen" @didDismiss="onModalDismiss">
+        <new-task v-if="!isDetailMode" @closeModal="closeModal" />
+        <task-detail v-else :task="selectedTask" @closeModal="closeModal" />
       </ion-modal>
     </div>
   </ion-page>
@@ -220,8 +221,9 @@ import {
 import { defineComponent, reactive, ref, onMounted, computed } from "vue";
 import { formatDateShort } from "@/utils/formatDate";
 import { ellipsisVertical, book, add, trash } from "ionicons/icons";
-import { useStore } from "vuex";
+import { useTodoStore } from '@/store/todoStore';
 import NewTask from "@/components/NewTask.vue";
+import TaskDetail from '@/components/TaskDetail.vue';
 export default defineComponent({
   components: {
     IonPage,
@@ -238,6 +240,7 @@ export default defineComponent({
     IonButtons,
     IonBackButton,
     NewTask,
+    TaskDetail,
     IonFab,
     IonFabButton,
     IonModal,
@@ -246,57 +249,72 @@ export default defineComponent({
     IonItemOption,
   },
   setup() {
-    const store = useStore();
-    const isOpenNewTask = ref(false);
+    const isModalOpen = ref(false);
+    const isDetailMode = ref(false);
+    const selectedTask = ref(null);
+    const todoStore = useTodoStore();
+
     const state = reactive({
-      tasksStudy: computed(() => {
-        return store.getters.tasksByCategory("Study");
-      }),
-      today: computed(() => {
-        return store.getters.today(state.tasksStudy);
-      }),
-      late: computed(() => {
-        return store.getters.late(state.tasksStudy);
-      }),
-      later: computed(() => {
-        return store.getters.later(state.tasksStudy);
-      }),
-      done: computed(() => {
-        return store.getters.done(state.tasksStudy);
-      }),
+      tasksStudy: computed(() => todoStore.tasksByCategory('Study')),
+      today: computed(() => todoStore.today(todoStore.tasksByCategory('Study'))),
+      late: computed(() => todoStore.late(todoStore.tasksByCategory('Study'))),
+      later: computed(() => todoStore.later(todoStore.tasksByCategory('Study'))),
+      done: computed(() => todoStore.done(todoStore.tasksByCategory('Study'))),
     });
-    function getTasksStudy() {
-      store.dispatch("getTasks");
-    }
+
     function doneTask(item) {
-      store.commit("doneTask", item);
+      todoStore.doneTask(item);
     }
     function notDoneTask(item) {
-      store.commit("notDoneTask", item);
+      todoStore.notDoneTask(item);
     }
     function deleteTask(item) {
-      store.commit("deleteTask", item);
+      todoStore.deleteTask(item);
     }
+
+    function openCreateModal() {
+      isDetailMode.value = false;
+      isModalOpen.value = true;
+    }
+
+    function openTaskDetail(item) {
+      selectedTask.value = item;
+      isDetailMode.value = true;
+      isModalOpen.value = true;
+    }
+
+    function closeModal() {
+      isModalOpen.value = false;
+    }
+
+    function onModalDismiss() {
+      isDetailMode.value = false;
+      selectedTask.value = null;
+    }
+
     onMounted(() => {
-      // ...
-      if (store.state.tasks.length == 0) {
-        getTasksStudy();
+      if (todoStore.tasks.length === 0) {
+        todoStore.getTasks();
       }
-      getTasksStudy();
     });
+
     return {
       state,
-      getTasksStudy,
       doneTask,
       notDoneTask,
-      store,
-      isOpenNewTask,
       deleteTask,
+      openCreateModal,
+      closeModal,
+      openTaskDetail,
+      onModalDismiss,
+      isModalOpen,
+      isDetailMode,
+      selectedTask,
       ellipsisVertical,
       book,
       add,
-      trash,      formatDateShort,
-
+      trash,
+      formatDateShort,
     };
   },
 });

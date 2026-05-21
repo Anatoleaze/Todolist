@@ -30,7 +30,7 @@
                                 <ion-icon :icon="trash" size="large"></ion-icon>
                             </ion-item-option>
                         </ion-item-options>
-                        <ion-item detail="true">
+                        <ion-item :detail="true" @click="openTaskDetail(item)">
                             <ion-label>
                                 <h2>{{ item.task }}</h2>
                                 <p style="color:red">{{ formatDateShort(item.dueDate) }}</p>
@@ -55,7 +55,7 @@
                                 <ion-icon :icon="trash" size="large"></ion-icon>
                             </ion-item-option>
                         </ion-item-options>
-                        <ion-item detail="true">
+                        <ion-item :detail="true" @click="openTaskDetail(item)">
                             <ion-label>
                                 <h2>{{ item.task }}</h2>
                                 <p>{{ formatDateShort(item.dueDate) }}</p>
@@ -80,7 +80,7 @@
                                 <ion-icon :icon="trash" size="large"></ion-icon>
                             </ion-item-option>
                         </ion-item-options>
-                        <ion-item detail="true">
+                        <ion-item :detail="true" @click="openTaskDetail(item)">
                             <ion-label>
                                 <h2>{{ item.task }}</h2>
                                 <p>{{ formatDateShort(item.dueDate) }}</p>
@@ -105,7 +105,7 @@
                                 <ion-icon :icon="trash" size="large"></ion-icon>
                             </ion-item-option>
                         </ion-item-options>
-                        <ion-item detail="true">
+                        <ion-item :detail="true" @click="openTaskDetail(item)">
                             <ion-label>
                                 <h2 style="color:#3490dc"><s>{{ item.task }}</s></h2>
                                 <p><s>{{ formatDateShort(item.dueDate) }}</s></p>
@@ -123,14 +123,15 @@
         </ion-content>
 
         <div>
-            <ion-fab @click="isOpenNewTask = true" vertical="bottom" horizontal="end" slot="fixed">
+            <ion-fab @click="openCreateModal" vertical="bottom" horizontal="end" slot="fixed">
                 <ion-fab-button>
                     <ion-icon :icon="add"></ion-icon>
                 </ion-fab-button>
             </ion-fab>
 
-            <ion-modal :is-open="isOpenNewTask" @didDismiss="isOpenNewTask = false">
-                <new-task @closeModal="isOpenNewTask = false" />
+                        <ion-modal :is-open="isModalOpen" @didDismiss="onModalDismiss">
+                <new-task v-if="!isDetailMode" @closeModal="closeModal" />
+                <task-detail v-else :task="selectedTask" @closeModal="closeModal" />
             </ion-modal>
         </div>
     </ion-page>
@@ -162,7 +163,8 @@ import {
 } from "@ionic/vue";
 import { ellipsisVertical, cart, trash, add } from "ionicons/icons";
 import NewTask from "@/components/NewTask.vue";
-import { useStore } from "vuex";
+import TaskDetail from '@/components/TaskDetail.vue'
+import { useTodoStore } from '@/store/todoStore';
 export default defineComponent({
     components: {
         IonPage,
@@ -185,50 +187,80 @@ export default defineComponent({
         IonFabButton,
         IonModal,
         NewTask,
+    TaskDetail,
     },
 
     setup() {
-        const isOpenNewTask = ref(false);
-        const store = useStore();
+        const isModalOpen = ref(false);
+    const isDetailMode = ref(false);
+    const selectedTask = ref(null);
+        const todoStore = useTodoStore();
         const tasksShopping = computed(() =>
-            store.getters.tasksByCategory("Shopping")
+            todoStore.tasksByCategory('Shopping')
         );
 
         const state = reactive({
             tasksShopping,
 
-            today: computed(() => store.getters.today(tasksShopping.value)),
-            late: computed(() => store.getters.late(tasksShopping.value)),
-            later: computed(() => store.getters.later(tasksShopping.value)),
-            done: computed(() => store.getters.done(tasksShopping.value)),
+            today: computed(() => todoStore.today(tasksShopping.value)),
+            late: computed(() => todoStore.late(tasksShopping.value)),
+            later: computed(() => todoStore.later(tasksShopping.value)),
+            done: computed(() => todoStore.done(tasksShopping.value)),
         });
 
         function getTasksShopping() {
-            store.dispatch("getTasks");
+            todoStore.getTasks();
         }
         function doneTask(item) {
-            store.dispatch("doneTask", item);
+            todoStore.doneTask(item);
         }
         function notDoneTask(item) {
-            store.dispatch("notDoneTask", item);
+            todoStore.notDoneTask(item);
         }
         function deleteTask(item) {
-            store.dispatch("deleteTask", item);
+            todoStore.deleteTask(item);
         }
 
+    function openCreateModal() {
+      isDetailMode.value = false;
+      isModalOpen.value = true;
+    }
+
+    function openTaskDetail(item) {
+      selectedTask.value = item;
+      isDetailMode.value = true;
+      isModalOpen.value = true;
+    }
+
+
+        function closeModal() {
+            isModalOpen.value = false;
+        }
+
+        function onModalDismiss() {
+            isDetailMode.value = false;
+            selectedTask.value = null;
+        }
+
+
         onMounted(() => {
-            if (store.state.tasks.length == 0) {
-                getTasksShopping();
+            if (todoStore.tasks.length == 0) {
+                todoStore.getTasks();
             }
         });
         return {
-            store,
             state,
             getTasksShopping,
             notDoneTask,
             doneTask,
-            isOpenNewTask,
             deleteTask,
+            openCreateModal,
+            closeModal,
+            openTaskDetail,
+            onModalDismiss,
+            isModalOpen,
+            isDetailMode,
+            selectedTask,
             ellipsisVertical,
             cart,
             trash,
