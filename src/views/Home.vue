@@ -186,13 +186,19 @@
 
       <ion-modal :is-open="isModalOpen" @didDismiss="onModalDismiss">
         <new-task
-          v-if="!isDetailMode"
+          v-if="modalMode === 'create'"
+          :edit-task="null"
+          @closeModal="closeModal"
+          @taskUpdated="onTaskUpdated"
+        />
+        <new-task
+          v-else-if="modalMode === 'edit'"
           :edit-task="editTaskData"
           @closeModal="closeModal"
           @taskUpdated="onTaskUpdated"
         />
         <task-detail
-          v-else
+          v-else-if="modalMode === 'detail'"
           :task="selectedTask"
           @closeModal="closeModal"
           @editTask="onEditTask"
@@ -257,10 +263,10 @@ export default defineComponent({
 
   setup() {
     const isModalOpen = ref(false);
-    const isDetailMode = ref(false);
+    const modalMode = ref('none'); // 'none' | 'detail' | 'edit' | 'create'
     const selectedTask = ref(null);
-    const todoStore = useTodoStore();
     const editTaskData = ref(null);
+    const todoStore = useTodoStore();
     const state = reactive({
       tasksHome: computed(() => todoStore.tasksByCategory('Home')),
       today: computed(() => todoStore.today(todoStore.tasksByCategory('Home'))),
@@ -282,7 +288,7 @@ export default defineComponent({
     }
 
     function openCreateModal() {
-      isDetailMode.value = false;
+      modalMode.value = 'create';
       editTaskData.value = null;
       selectedTask.value = null;
       isModalOpen.value = true;
@@ -290,13 +296,12 @@ export default defineComponent({
 
     function openTaskDetail(item) {
       selectedTask.value = item;
-      isDetailMode.value = true;
+      modalMode.value = 'detail';
       isModalOpen.value = true;
     }
 
     function onEditTask(task) {
-      // Passe en mode édition et ouvre la modal NewTask avec la tâche à éditer
-      isDetailMode.value = false;
+      modalMode.value = 'edit';
       editTaskData.value = { ...task };
       isModalOpen.value = true;
     }
@@ -310,12 +315,12 @@ export default defineComponent({
     function closeModal() {
       editTaskData.value = null;
       selectedTask.value = null;
+      modalMode.value = 'none';
       isModalOpen.value = false;
-      isDetailMode.value = false;
     }
 
     function onModalDismiss() {
-      isDetailMode.value = false;
+      modalMode.value = 'none';
       selectedTask.value = null;
       editTaskData.value = null;
       isModalOpen.value = false;
@@ -328,7 +333,7 @@ export default defineComponent({
     });
     return {
       isModalOpen,
-      isDetailMode,
+      modalMode,
       selectedTask,
       editTaskData,
       state,

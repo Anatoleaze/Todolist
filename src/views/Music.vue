@@ -140,13 +140,19 @@
 
       <ion-modal :is-open="isModalOpen" @didDismiss="onModalDismiss">
         <new-task
-          v-if="!isDetailMode"
+          v-if="modalMode === 'create'"
+          :edit-task="null"
+          @closeModal="closeModal"
+          @taskUpdated="onTaskUpdated"
+        />
+        <new-task
+          v-else-if="modalMode === 'edit'"
           :edit-task="editTaskData"
           @closeModal="closeModal"
           @taskUpdated="onTaskUpdated"
         />
         <task-detail
-          v-else
+          v-else-if="modalMode === 'detail'"
           :task="selectedTask"
           @closeModal="closeModal"
           @editTask="onEditTask"
@@ -211,6 +217,7 @@ export default defineComponent({
 
   setup() {
     const isModalOpen = ref(false);
+    const modalMode = ref('none'); // 'none' | 'detail' | 'edit' | 'create'
     const isDetailMode = ref(false);
     const selectedTask = ref(null);
     const editTaskData = ref(null);
@@ -239,19 +246,19 @@ export default defineComponent({
       todoStore.deleteTask(item);
     }
     function openCreateModal() {
-      isDetailMode.value = false;
+      modalMode.value = 'create';
       editTaskData.value = null;
       selectedTask.value = null;
       isModalOpen.value = true;
     }
     function openTaskDetail(item) {
       selectedTask.value = item;
-      isDetailMode.value = true;
+      modalMode.value = 'detail';
       isModalOpen.value = true;
     }
 
     function onEditTask(task) {
-      isDetailMode.value = false;
+      modalMode.value = 'edit';
       editTaskData.value = { ...task };
       isModalOpen.value = true;
     }
@@ -262,11 +269,11 @@ export default defineComponent({
     function closeModal() {
       editTaskData.value = null;
       selectedTask.value = null;
+      modalMode.value = 'none';
       isModalOpen.value = false;
-      isDetailMode.value = false;
     }
     function onModalDismiss() {
-      isDetailMode.value = false;
+      modalMode.value = 'none';
       selectedTask.value = null;
       editTaskData.value = null;
       isModalOpen.value = false;
@@ -295,7 +302,7 @@ export default defineComponent({
       onTaskUpdated,
       onModalDismiss,
       isModalOpen,
-      isDetailMode,
+      modalMode,
       selectedTask,
       editTaskData,
       ellipsisVertical,
