@@ -99,10 +99,6 @@ VITE_FIREBASE_APP_ID=
 
 ---
 
-## 📦 Migration Vuex → Pinia
-
-> Depuis la version 2026, l’application utilise **Pinia** pour la gestion d’état globale à la place de Vuex. L’ancien store Vuex a été supprimé et tout le code utilise désormais Pinia (voir `src/store/todoStore.ts`).
-
 # 🐳 Lancement avec Docker
 
 ## 5️⃣ Construire l’image Docker
