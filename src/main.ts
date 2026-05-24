@@ -26,7 +26,7 @@ import "./theme/variables.css";
 /* Tailwindcss */
 import "./assets/css/style.css";
 
-import store from "./store/index";
+import { createPinia } from 'pinia';
 
 import { auth } from "./firebase";
 import { signInAnonymously } from "firebase/auth";
@@ -36,7 +36,7 @@ const app = createApp(App);
 
 app.use(IonicVue);
 app.use(router);
-app.use(store);
+app.use(createPinia());
 
 // 🔥 Connexion anonyme Firebase
 signInAnonymously(auth)

@@ -150,7 +150,7 @@ import {
   add,
 } from "ionicons/icons";
 import NewTask from "@/components/NewTask.vue";
-import { useStore } from "vuex";
+import { useTodoStore } from '@/store/todoStore';
 export default defineComponent({
   components: {
     IonPage,
@@ -167,30 +167,30 @@ export default defineComponent({
   },
   setup() {
     const isOpenNewTask = ref(false);
-    const store = useStore();
+    const todoStore = useTodoStore();
 
-    const lengthOfAllTasks = computed(() => store.state.tasks?.length ?? 0);
-    const lengthOfWorkTasks = computed(() => store.getters.lengthTasksByCategory("Work"))
-    const lengthOfMusicTasks = computed(() => store.getters.lengthTasksByCategory("Music"))
-    const lengthOfTravelTasks = computed(() => store.getters.lengthTasksByCategory("Travel"))
-    const lengthOfStudyTasks = computed(() => store.getters.lengthTasksByCategory("Study"))
-    const lengthOfHomeTasks = computed(() => store.getters.lengthTasksByCategory("Home"))
-    const lengthOfSportTasks = computed(() => store.getters.lengthTasksByCategory("Sport"))
-    const lengthOfShoppingTasks = computed(() => store.getters.lengthTasksByCategory("Shopping"))
+    const lengthOfAllTasks = computed(() => todoStore.tasks?.length ?? 0);
+    const lengthOfWorkTasks = computed(() => todoStore.lengthTasksByCategory('Work'));
+    const lengthOfMusicTasks = computed(() => todoStore.lengthTasksByCategory('Music'));
+    const lengthOfTravelTasks = computed(() => todoStore.lengthTasksByCategory('Travel'));
+    const lengthOfStudyTasks = computed(() => todoStore.lengthTasksByCategory('Study'));
+    const lengthOfHomeTasks = computed(() => todoStore.lengthTasksByCategory('Home'));
+    const lengthOfSportTasks = computed(() => todoStore.lengthTasksByCategory('Sport'));
+    const lengthOfShoppingTasks = computed(() => todoStore.lengthTasksByCategory('Shopping'));
 
     function getTasks() {
-      store.dispatch("getTasks");
+      todoStore.getTasks();
     }
 
     onMounted(() => {
-      if (store.state.tasks.length == 0) {
-        getTasks();
+      if (todoStore.tasks.length == 0) {
+        todoStore.getTasks();
       }
     });
     return {
       isOpenNewTask,
-      store,
-      //getTasks,
+      //state,
+      getTasks,
       clipboard,
       briefcase,
       headset,

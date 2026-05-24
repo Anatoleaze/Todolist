@@ -1,167 +1,252 @@
 <template>
   <ion-page>
     <ion-content class="ion-padding">
-      <div class="mt-2">
-        <h2 class="text-center text-2xl font-semibold">Nouvelle tâche</h2>
-      </div>
 
-      <form @submit.prevent="onSubmit" class="flex flex-col justify-center h-full gap-4 mt-6">
-        <div>
+      <div :key="formKey">
+        <h2 class="text-center text-2xl font-semibold">
+          {{ isEditMode ? "Modifier la tâche" : "Nouvelle tâche" }}
+        </h2>
+
+        <Form
+          @submit="onSubmit"
+          :initial-values="initialValues"
+          v-slot="{ values, setFieldValue }"
+        >
+
+          <!-- TASK -->
           <ion-item>
-          <ion-icon :icon="notifications" color="primary" slot="start"></ion-icon>
-          <ion-input
-            v-model="taskName"
-            label="Nom"
-            label-placement="stacked"
-            placeholder="Entrez le nom"
-          />
-        </ion-item>
-      </div>
+            <ion-label>Nom</ion-label>
 
-      <div>
-        <ion-item>
-          <ion-icon :icon="notifications" color="primary" slot="start"></ion-icon>
-          <ion-datetime
-            v-model="dueDate"
-            label="Date d'échéance"
-            label-placement="stacked"
-            presentation="date-time"
-            prefer-wheel="true"
-            class="datetime-field"
-          />
-        </ion-item>
-      </div>
-
-      <div>
-        <ion-item>
-          <ion-icon :icon="document" color="primary" slot="start"></ion-icon>
-          <ion-textarea
-            v-model="description"
-            label="Description"
-            label-placement="stacked"
-            placeholder="Précisez cette tâche..."
-          ></ion-textarea>
-        </ion-item>
-      </div>
-
-      <div>
-        <ion-item>
-          <ion-icon :icon="grid" color="primary" slot="start"></ion-icon>
-          <ion-select
-            v-model="category"
-            label="Catégorie"
-            label-placement="stacked"
-            placeholder="Sélectionner une catégorie"
-          >
-              <ion-select-option value="Travel">Voyage</ion-select-option>
-              <ion-select-option value="Study">Etude</ion-select-option>
-              <ion-select-option value="Home">Maison</ion-select-option>
-              <ion-select-option value="Shopping">Shopping</ion-select-option>
-              <ion-select-option value="Sport">Sport</ion-select-option>
-            </ion-select>
+            <Field name="taskField" :rules="isRequired" v-slot="{ field }">
+              <ion-input
+                :model-value="field.value"
+                @ionInput="field.onChange($event.target.value)"
+                placeholder="Nom de la tâche"
+              />
+            </Field>
           </ion-item>
-        </div>
 
-        <div class="mt-8">
-          <ion-button expand="block" type="submit">Créer la tâche</ion-button>
-        </div>
-      </form>
+          <ion-item lines="none">
+            <ErrorMessage name="taskField" v-slot="{ message }">
+              <ion-text color="danger">{{ message }}</ion-text>
+            </ErrorMessage>
+          </ion-item>
 
-      <ion-fab vertical="top" horizontal="end" slot="fixed" class="cursor-pointer" @click="closeModal">
-        <ion-icon :icon="close" class="text-3xl"></ion-icon>
+          <!-- DATE (FIX IONIC OFFICIEL) -->
+          <ion-item>
+            <ion-icon :icon="notifications" slot="start" color="primary" />
+
+            <ion-datetime-button datetime="dueDatePicker" />
+
+            <ion-modal keep-contents-mounted="true">
+              <ion-datetime
+                id="dueDatePicker"
+                :model-value="values.duedateField"
+                @ionChange="setFieldValue('duedateField', $event.detail.value)"
+                presentation="date-time"
+              />
+            </ion-modal>
+          </ion-item>
+
+          <ion-item lines="none">
+            <ErrorMessage name="duedateField" v-slot="{ message }">
+              <ion-text color="danger">{{ message }}</ion-text>
+            </ErrorMessage>
+          </ion-item>
+
+          <!-- NOTE -->
+          <ion-item>
+            <ion-icon :icon="document" slot="start" color="primary" />
+            <ion-textarea v-model="note" placeholder="Précisez cette tâche." />
+          </ion-item>
+
+          <!-- CATEGORY -->
+          <ion-item>
+            <ion-icon :icon="grid" slot="start" color="primary" />
+            <ion-label>Catégorie</ion-label>
+
+            <Field name="categoryField" :rules="isRequired" v-slot="{ field }">
+              <ion-select
+                :value="field.value"
+                @ionChange="field.onChange($event.detail.value)"
+              >
+                <ion-select-option value="Work">Travail</ion-select-option>
+                <ion-select-option value="Music">Music</ion-select-option>
+                <ion-select-option value="Travel">Voyage</ion-select-option>
+                <ion-select-option value="Study">Étude</ion-select-option>
+                <ion-select-option value="Home">Maison</ion-select-option>
+                <ion-select-option value="Shopping">Shopping</ion-select-option>
+                <ion-select-option value="Sport">Sport</ion-select-option>
+              </ion-select>
+            </Field>
+          </ion-item>
+
+          <ion-item lines="none">
+            <ErrorMessage name="categoryField" v-slot="{ message }">
+              <ion-text color="danger">{{ message }}</ion-text>
+            </ErrorMessage>
+          </ion-item>
+
+          <!-- SUBMIT -->
+          <ion-button expand="block" type="submit" class="mt-6">
+            {{ isEditMode ? "Modifier la tâche" : "Créer la tâche" }}
+          </ion-button>
+
+        </Form>
+      </div>
+
+      <!-- CLOSE -->
+      <ion-fab vertical="top" horizontal="end" slot="fixed">
+        <ion-fab-button @click="closeModal">
+          <ion-icon :icon="close" />
+        </ion-fab-button>
       </ion-fab>
+
     </ion-content>
   </ion-page>
 </template>
+
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
 import {
   IonPage,
   IonContent,
-  IonFab,
-  IonIcon,
   IonItem,
+  IonLabel,
   IonInput,
-  IonDatetime,
   IonTextarea,
   IonButton,
+  IonText,
+  IonIcon,
   IonSelect,
   IonSelectOption,
+  IonDatetime,
+  IonDatetimeButton,
+  IonModal,
+  IonFab,
+  IonFabButton,
 } from "@ionic/vue";
-import { close, notifications, document, grid } from "ionicons/icons";
-import { collection, addDoc } from "firebase/firestore";
+
+import {
+  close,
+  notifications,
+  document,
+  grid,
+} from "ionicons/icons";
+
+import { Form, Field, ErrorMessage } from "vee-validate";
+
+import { collection, addDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
 
 export default defineComponent({
+  props: {
+    editTask: { type: Object, default: null },
+  },
+
   components: {
     IonPage,
     IonContent,
-    IonFab,
-    IonIcon,
     IonItem,
+    IonLabel,
     IonInput,
-    IonDatetime,
     IonTextarea,
     IonButton,
+    IonText,
+    IonIcon,
     IonSelect,
     IonSelectOption,
+    IonDatetime,
+    IonDatetimeButton,
+    IonModal,
+    IonFab,
+    IonFabButton,
+    Form,
+    Field,
+    ErrorMessage,
   },
 
   setup(props, { emit }) {
-    const taskName = ref("");
-    const dueDate = ref(new Date().toISOString());
-    const description = ref("");
-    const category = ref("");
+    const note = ref("");
+    const formKey = ref(0);
 
-    const onSubmit = async () => {
-      const newTask = {
-        task: taskName.value.trim(),
-        note: description.value.trim(),
-        dueDate: dueDate.value,
-        category: category.value,
-        done: false,
+    const isEditMode = computed(() => !!props.editTask);
+
+    const getNowIso = () => new Date().toISOString().slice(0, 19);
+
+    const normalizeDate = (v) =>
+      v ? v.toString().slice(0, 19) : getNowIso();
+
+    const initialValues = ref({
+      taskField: "",
+      duedateField: getNowIso(),
+      categoryField: "",
+    });
+
+    const isRequired = (v) => (v ? true : "Champ obligatoire");
+
+    function setForm(task) {
+      initialValues.value = {
+        taskField: task?.task || "",
+        duedateField: normalizeDate(task?.dueDate),
+        categoryField: task?.category || "",
       };
 
-      try {
-        await addDoc(collection(db, "tasks"), newTask);
+      note.value = task?.note || "";
+      formKey.value = Date.now();
+    }
 
-        // Réinitialiser les champs
-        taskName.value = "";
-        dueDate.value = new Date().toISOString();
-        description.value = "";
-        category.value = "";
+    watch(
+      () => props.editTask,
+      (val) => setForm(val),
+      { immediate: true }
+    );
 
-        console.log("Tâche créée avec succès!");
+    async function onSubmit(values) {
+      if (isEditMode.value) {
+        const refTask = doc(db, "tasks", props.editTask.id);
+
+        await updateDoc(refTask, {
+          task: values.taskField,
+          note: note.value,
+          dueDate: values.duedateField,
+          category: values.categoryField,
+        });
+
+        emit("taskUpdated");
         emit("closeModal");
-      } catch (error) {
-        console.error("Erreur lors de la création de la tâche: ", error);
-        alert("Erreur lors de la création de la tâche");
+      } else {
+        await addDoc(collection(db, "tasks"), {
+          task: values.taskField,
+          note: note.value,
+          dueDate: values.duedateField,
+          category: values.categoryField,
+          done: false,
+        });
+
+        emit("closeModal");
       }
-    };
+    }
 
     function closeModal() {
       emit("closeModal");
     }
 
     return {
-      taskName,
-      dueDate,
-      description,
-      category,
+      note,
+      formKey,
+      isEditMode,
+      initialValues,
       onSubmit,
+      isRequired,
       closeModal,
+      close,
       notifications,
       document,
       grid,
-      close,
     };
   },
 });
 </script>
 
-<style>
-.datetime-field {
-  min-height: 80px;
-  width: 100%;
-}
-</style>
+<style scoped></style>

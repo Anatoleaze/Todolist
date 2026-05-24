@@ -18,23 +18,25 @@
 
         <div class="text-center">
           <ion-card-title class="text-2xl">Voyages</ion-card-title>
-          <ion-card-subtitle
-            >{{ tasksTravel.length }} Tâches</ion-card-subtitle
-          >
+          <ion-card-subtitle>
+            {{ state.tasksTravel.length }} Tâches
+          </ion-card-subtitle>
         </div>
       </div>
 
       <div>
+        <!-- EN RETARD -->
         <ion-list>
           <ion-list-header>
-            <ion-label
-              >En retard
-              <span class="text-gray-600 text-base">{{
-                late.length
-              }}</span></ion-label
-            >
+            <ion-label>
+              En retard
+              <span class="text-gray-600 text-base">
+                {{ state.late.length }}
+              </span>
+            </ion-label>
           </ion-list-header>
-          <ion-item-sliding v-for="item in late" :key="item.id">
+
+          <ion-item-sliding v-for="item in state.late" :key="item.id">
             <ion-item-options side="start">
               <ion-item-option
                 @click="deleteTask(item)"
@@ -44,12 +46,16 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+
+            <ion-item :detail="true" @click="openTaskDetail(item)">
               <ion-label>
                 <h2>{{ item.task }}</h2>
-                <p style="color:red">{{ formatDateShort(item.dueDate) }}</p>
+                <p style="color:red">
+                  {{ formatDateShort(item.dueDate) }}
+                </p>
               </ion-label>
             </ion-item>
+
             <ion-item-options side="end">
               <ion-item-option
                 @click="doneTask(item)"
@@ -61,16 +67,19 @@
             </ion-item-options>
           </ion-item-sliding>
         </ion-list>
+
+        <!-- AUJOURD'HUI -->
         <ion-list>
           <ion-list-header>
-            <ion-label
-              >Aujourd'hui
-              <span class="text-gray-600 text-base">{{
-                today.length
-              }}</span></ion-label
-            >
+            <ion-label>
+              Aujourd'hui
+              <span class="text-gray-600 text-base">
+                {{ state.today.length }}
+              </span>
+            </ion-label>
           </ion-list-header>
-          <ion-item-sliding v-for="item in today" :key="item.id">
+
+          <ion-item-sliding v-for="item in state.today" :key="item.id">
             <ion-item-options side="start">
               <ion-item-option
                 @click="deleteTask(item)"
@@ -80,48 +89,14 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
-              <ion-label>
-                <h2>{{ item.task }}</h2>
-                <p>{{ formatDateShort(item.dueDate) }}</p>
-              </ion-label>
-            </ion-item>
-            <ion-item-options side="end">
-              <ion-item-option
-                @click="doneTask(item)"
-                color="primary"
-                expandable
-              >
-                <ion-checkbox :checked="item.done"></ion-checkbox>
-              </ion-item-option>
-            </ion-item-options>
-          </ion-item-sliding>
-        </ion-list>
-        <ion-list>
-          <ion-list-header>
-            <ion-label
-              >Plus tard
-              <span class="text-gray-600 text-base">{{
-                later.length
-              }}</span></ion-label
-            >
-          </ion-list-header>
-          <ion-item-sliding v-for="item in later" :key="item.id">
-            <ion-item-options side="start">
-              <ion-item-option
-                @click="deleteTask(item)"
-                color="danger"
-                expandable
-              >
-                <ion-icon :icon="trash" size="large"></ion-icon>
-              </ion-item-option>
-            </ion-item-options>
-            <ion-item detail="true">
+
+            <ion-item :detail="true" @click="openTaskDetail(item)">
               <ion-label>
                 <h2>{{ item.task }}</h2>
                 <p>{{ formatDateShort(item.dueDate) }}</p>
               </ion-label>
             </ion-item>
+
             <ion-item-options side="end">
               <ion-item-option
                 @click="doneTask(item)"
@@ -133,16 +108,19 @@
             </ion-item-options>
           </ion-item-sliding>
         </ion-list>
+
+        <!-- PLUS TARD -->
         <ion-list>
           <ion-list-header>
-            <ion-label
-              >Terminé
-              <span class="text-gray-600 text-base">{{
-                done.length
-              }}</span></ion-label
-            >
+            <ion-label>
+              Plus tard
+              <span class="text-gray-600 text-base">
+                {{ state.later.length }}
+              </span>
+            </ion-label>
           </ion-list-header>
-          <ion-item-sliding v-for="item in done" :key="item.id">
+
+          <ion-item-sliding v-for="item in state.later" :key="item.id">
             <ion-item-options side="start">
               <ion-item-option
                 @click="deleteTask(item)"
@@ -152,7 +130,49 @@
                 <ion-icon :icon="trash" size="large"></ion-icon>
               </ion-item-option>
             </ion-item-options>
-            <ion-item detail="true">
+
+            <ion-item :detail="true" @click="openTaskDetail(item)">
+              <ion-label>
+                <h2>{{ item.task }}</h2>
+                <p>{{ formatDateShort(item.dueDate) }}</p>
+              </ion-label>
+            </ion-item>
+
+            <ion-item-options side="end">
+              <ion-item-option
+                @click="doneTask(item)"
+                color="primary"
+                expandable
+              >
+                <ion-checkbox :checked="item.done"></ion-checkbox>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+
+        <!-- TERMINE -->
+        <ion-list>
+          <ion-list-header>
+            <ion-label>
+              Terminé
+              <span class="text-gray-600 text-base">
+                {{ state.done.length }}
+              </span>
+            </ion-label>
+          </ion-list-header>
+
+          <ion-item-sliding v-for="item in state.done" :key="item.id">
+            <ion-item-options side="start">
+              <ion-item-option
+                @click="deleteTask(item)"
+                color="danger"
+                expandable
+              >
+                <ion-icon :icon="trash" size="large"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+
+            <ion-item :detail="true" @click="openTaskDetail(item)">
               <ion-label>
                 <h2 style="color:#3490dc">
                   <s>{{ item.task }}</s>
@@ -162,6 +182,7 @@
                 </p>
               </ion-label>
             </ion-item>
+
             <ion-item-options side="end">
               <ion-item-option
                 @click="notDoneTask(item)"
@@ -178,7 +199,7 @@
 
     <div>
       <ion-fab
-        @click="isOpenNewTask = true"
+        @click="openCreateModal"
         vertical="bottom"
         horizontal="end"
         slot="fixed"
@@ -188,8 +209,29 @@
         </ion-fab-button>
       </ion-fab>
 
-      <ion-modal :is-open="isOpenNewTask" @didDismiss="isOpenNewTask = false">
-        <new-task @closeModal="isOpenNewTask = false" />
+      <ion-modal :is-open="isModalOpen" @didDismiss="onModalDismiss">
+
+        <new-task
+          v-if="modalMode === 'create'"
+          :edit-task="null"
+          @closeModal="closeModal"
+          @taskUpdated="onTaskUpdated"
+        />
+
+        <new-task
+          v-else-if="modalMode === 'edit'"
+          :edit-task="editTaskData"
+          @closeModal="closeModal"
+          @taskUpdated="onTaskUpdated"
+        />
+
+        <task-detail
+          v-else-if="modalMode === 'detail'"
+          :task="selectedTask"
+          @closeModal="closeModal"
+          @editTask="onEditTask"
+        />
+
       </ion-modal>
     </div>
   </ion-page>
@@ -217,11 +259,22 @@ import {
   IonItemOptions,
   IonItemOption,
 } from "@ionic/vue";
+
 import { defineComponent, reactive, ref, onMounted, computed } from "vue";
 import { formatDateShort } from "@/utils/formatDate";
-import { ellipsisVertical, airplane, add, trash } from "ionicons/icons";
-import { useStore } from "vuex";
+
+import {
+  ellipsisVertical,
+  airplane,
+  add,
+  trash,
+} from "ionicons/icons";
+
+import { useTodoStore } from '@/store/todoStore';
+
 import NewTask from "@/components/NewTask.vue";
+import TaskDetail from '@/components/TaskDetail.vue';
+
 export default defineComponent({
   components: {
     IonPage,
@@ -238,6 +291,7 @@ export default defineComponent({
     IonButtons,
     IonBackButton,
     NewTask,
+    TaskDetail,
     IonModal,
     IonFabButton,
     IonFab,
@@ -247,43 +301,122 @@ export default defineComponent({
   },
 
   setup() {
-    const store = useStore();
-    const isOpenNewTask = ref(false);
-    const tasksTravel = computed(() => store.getters.tasksByCategory("Travel"));
-    const today = computed(() => store.getters.today(tasksTravel.value));
-    const late = computed(() => store.getters.late(tasksTravel.value));
-    const later = computed(() => store.getters.later(tasksTravel.value));
-    const done = computed(() => store.getters.done(tasksTravel.value));
-    function getTasksTravel() {
-      store.dispatch("getTasks");
-    }
-    function doneTask(item) {
-      store.dispatch("doneTask", item);
-    }
-    function notDoneTask(item) {
-      store.dispatch("notDoneTask", item);
-    }
-    function deleteTask(item) {
-      store.dispatch("deleteTask", item);
-    }
-    onMounted(() => {
-      // ...
-      if (store.state.tasks.length == 0) {
-        getTasksTravel();
-      }
-    });
-    return {
+
+    const isModalOpen = ref(false);
+
+    const modalMode = ref('none');
+
+    const selectedTask = ref(null);
+
+    const editTaskData = ref(null);
+
+    const todoStore = useTodoStore();
+
+    const tasksTravel = computed(() =>
+      todoStore.tasksByCategory('Travel')
+    );
+
+    const state = reactive({
       tasksTravel,
-      today,
-      late,
-      later,
-      done,
-      getTasksTravel,
-      store,
+
+      today: computed(() => todoStore.today(tasksTravel.value)),
+
+      late: computed(() => todoStore.late(tasksTravel.value)),
+
+      later: computed(() => todoStore.later(tasksTravel.value)),
+
+      done: computed(() => todoStore.done(tasksTravel.value)),
+    });
+
+    function doneTask(item) {
+      todoStore.doneTask(item);
+    }
+
+    function notDoneTask(item) {
+      todoStore.notDoneTask(item);
+    }
+
+    function deleteTask(item) {
+      todoStore.deleteTask(item);
+    }
+
+    function openCreateModal() {
+      modalMode.value = 'create';
+
+      editTaskData.value = null;
+
+      selectedTask.value = null;
+
+      isModalOpen.value = true;
+    }
+
+    function openTaskDetail(item) {
+      selectedTask.value = item;
+
+      modalMode.value = 'detail';
+
+      isModalOpen.value = true;
+    }
+
+    function onEditTask(task) {
+      modalMode.value = 'edit';
+
+      editTaskData.value = { ...task };
+
+      isModalOpen.value = true;
+    }
+
+    function onTaskUpdated() {
+      closeModal();
+    }
+
+    function closeModal() {
+
+      editTaskData.value = null;
+
+      selectedTask.value = null;
+
+      modalMode.value = 'none';
+
+      isModalOpen.value = false;
+    }
+
+    function onModalDismiss() {
+
+      modalMode.value = 'none';
+
+      selectedTask.value = null;
+
+      editTaskData.value = null;
+
+      isModalOpen.value = false;
+    }
+
+    onMounted(() => {
+
+      if (todoStore.tasks.length === 0) {
+
+        todoStore.getTasks();
+
+      }
+
+    });
+
+    return {
+      state,
       doneTask,
       notDoneTask,
-      isOpenNewTask,
       deleteTask,
+      openCreateModal,
+      closeModal,
+      openTaskDetail,
+      onEditTask,
+      onTaskUpdated,
+      onModalDismiss,
+      isModalOpen,
+      modalMode,
+      selectedTask,
+      editTaskData,
       ellipsisVertical,
       airplane,
       add,

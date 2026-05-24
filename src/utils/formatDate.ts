@@ -1,28 +1,29 @@
-export function formatDateShort(input: unknown): string {
-  if (!input) return "";
-  let d: Date;
-
-  if (typeof input === "string") {
-    d = new Date(input);
-  } else if (input instanceof Date) {
-    d = input;
-  } else if (typeof (input as any)?.toDate === "function") {
-    d = (input as any).toDate();
-  } else {
-    try {
-      d = new Date(String(input));
-    } catch {
-      return "";
-    }
+export function formatDateShort(
+  value: string | number | Date | null | undefined,
+): string {
+  if (value === null || value === undefined || value === "") {
+    return "";
   }
 
-  if (isNaN(d.getTime())) return "";
+  let date: Date;
 
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
-  const hh = String(d.getHours()).padStart(2, "0");
-  const min = String(d.getMinutes()).padStart(2, "0");
+  if (value instanceof Date) {
+    date = value;
+  } else if (
+    typeof value === "object" &&
+    typeof (value as any).toDate === "function"
+  ) {
+    date = (value as any).toDate();
+  } else if (typeof value === "number") {
+    date = new Date(value);
+  } else {
+    date = new Date(String(value));
+  }
 
-  return `${dd}/${mm}/${yyyy} à ${hh}:${min}`;
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()} à ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
