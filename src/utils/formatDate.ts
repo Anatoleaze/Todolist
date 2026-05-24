@@ -1,4 +1,6 @@
-export function formatDateShort(value: string | number | Date | null | undefined): string {
+export function formatDateShort(
+  value: string | number | Date | null | undefined,
+): string {
   if (value === null || value === undefined || value === "") {
     return "";
   }
@@ -7,7 +9,10 @@ export function formatDateShort(value: string | number | Date | null | undefined
 
   if (value instanceof Date) {
     date = value;
-  } else if (typeof value === "object" && typeof (value as any).toDate === "function") {
+  } else if (
+    typeof value === "object" &&
+    typeof (value as any).toDate === "function"
+  ) {
     date = (value as any).toDate();
   } else if (typeof value === "number") {
     date = new Date(value);
