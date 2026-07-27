@@ -12,6 +12,10 @@
     "capacitor:sync": "cap sync",
     "capacitor:run": "cap run"
   },
+  "overrides": {
+    "brace-expansion": ">=2.0.2",
+    "minimatch": ">=3.1.2"
+  },
   "dependencies": {
     "@ionic/vue": "^7.4.0",
     "@ionic/vue-router": "^7.4.0",
