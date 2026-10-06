@@ -1,35 +1,34 @@
 # 📝 TodoList VueJS – Application de gestion de tâches
 
-**VueJS TodoList** est une application web de gestion de tâches développée avec **Vue.js**, **Ionic Vue**, **Pinia** et **Firebase**.
-
-
-Ce projet m’a permis d’apprendre à construire une application moderne, modulaire et réactive avec :
-- Vue 3
-- Vite
-- Pinia (gestion d’état)
-- Firebase
-- Docker
-- Ionic Vue
-
----
-
 ![Aperçu de l'application](image/todolist.jpg)
 
----
-
-# 🚀 Fonctionnalités
-
-- ✅ Ajouter une tâche
-- 🛠️ Modifier une tâche
-- ❌ Supprimer une tâche
-- 🔁 Interface dynamique et réactive
-- ☁️ Sauvegarde des données avec Firebase
-- 📱 Interface basée sur Ionic Vue
-- 🐳 Déploiement avec Docker
+## 📌 Nom du projet
+**TodoList VueJS**
 
 ---
 
-# 🧱 Technologies utilisées
+## 📄 Description courte
+Application web et mobile réactive de gestion de tâches développée avec Vue 3, Ionic et Pinia. Elle permet de gérer facilement ses tâches au quotidien grâce à une interface intuitive et une synchronisation des données en temps réel via Firebase. Conteneurisée avec Docker, l'application est facilement déployable.
+
+---
+
+## 📖 Description détaillée
+Ce projet d'application de gestion de tâches a été conçu pour mettre en pratique une architecture front-end moderne, modulaire et hautement performante.
+
+S'appuyant sur **Vue 3** et le bundler **Vite**, l'application exploite **Pinia** pour une gestion centralisée et fluide de l'état de l'application, ainsi qu'**Ionic Vue** pour offrir un rendu visuel adapté aux interfaces mobiles et web. La persistance et la synchronisation des données sont assurées par un backend **Firebase**. Pour garantir un déploiement homogène et simplifié, le projet intègre un environnement de conteneurisation automatisé avec **Docker** et un serveur **Nginx**.
+
+---
+
+## ✨ Fonctionnalités du projet
+- ➕ **Gestion complète des tâches (CRUD)** : Ajout, modification, consultation et suppression de tâches en temps réel.
+- 📱 **Interface dynamique & réactive** : Expérience utilisateur fluide et adaptative développée avec Vue 3 et Ionic.
+- ☁️ **Persistance dans le Cloud** : Sauvegarde, synchronisation et stockage des données via Firebase.
+- 🧠 **Gestion d'état centralisée** : Architecture propre grâce à Pinia pour la gestion du flux de données.
+- 🐳 **Déploiement conteneurisé** : Configuration Docker et Nginx prête pour la production et le développement local.
+
+---
+
+## 🧱 Technologies utilisées
 
 - **Frontend** : Vue.js 3
 - **UI Framework** : Ionic Vue
@@ -41,22 +40,22 @@ Ce projet m’a permis d’apprendre à construire une application moderne, modu
 
 ---
 
-# 📦 Installation & Lancement
+## 📦 Installation & Lancement
 
-## 1️⃣ Cloner le projet
+### 1️⃣ Cloner le projet
 
 ```bash
-git clone https://github.com/ton-utilisateur/Todolist.git
+git clone https://github.com/Anatoleaze/Todolist.git
 cd Todolist
 ```
 
 ---
 
-# 🔥 Configuration Firebase
+## 🔥 Configuration Firebase
 
 L'application utilise Firebase.
 
-## 2️⃣ Créer un projet Firebase
+### 2️⃣ Créer un projet Firebase
 
 1. Créer un compte sur Firebase :
 👉 https://firebase.google.com/
@@ -69,7 +68,7 @@ L'application utilise Firebase.
 
 ---
 
-## 3️⃣ Créer le fichier `.env`
+### 3️⃣ Créer le fichier `.env`
 
 Le projet contient un fichier `.env.test` servant de modèle.
 
@@ -81,7 +80,7 @@ cp .env.test .env
 
 ---
 
-## 4️⃣ Remplir les variables Firebase
+### 4️⃣ Remplir les variables Firebase
 
 Ouvrir le fichier `.env` puis remplacer les valeurs par celles fournies par Firebase :
 
@@ -96,12 +95,9 @@ VITE_FIREBASE_APP_ID=
 
 ---
 
+## 🐳 Lancement avec Docker
 
----
-
-# 🐳 Lancement avec Docker
-
-## 5️⃣ Construire l’image Docker
+### 5️⃣ Construire l’image Docker
 
 ```bash
 docker build -t todolist-app .
@@ -109,7 +105,7 @@ docker build -t todolist-app .
 
 ---
 
-## 6️⃣ Lancer le conteneur
+### 6️⃣ Lancer le conteneur
 
 ```bash
 docker run -p 8080:80 todolist-app
@@ -117,7 +113,7 @@ docker run -p 8080:80 todolist-app
 
 ---
 
-# 🌐 Accès à l’application
+## 🌐 Accès à l’application
 
 L’application sera accessible à l’adresse suivante :
 
@@ -125,9 +121,9 @@ L’application sera accessible à l’adresse suivante :
 
 ---
 
-# 🛠️ Développement local
+## 🛠️️ Développement local
 
-## Installer les dépendances
+### Installer les dépendances
 
 ```bash
 npm install
@@ -135,7 +131,7 @@ npm install
 
 ---
 
-## Lancer le serveur de développement
+### Lancer le serveur de développement
 
 ```bash
 npm run dev
@@ -143,6 +139,6 @@ npm run dev
 
 ---
 
-# 📄 Licence
+## 📄 Licence
 
 Projet réalisé dans un but pédagogique et de démonstration.
