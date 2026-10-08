@@ -13,32 +13,40 @@
     "capacitor:run": "cap run"
   },
   "overrides": {
+    "@grpc/grpc-js": "^1.13.6",
+    "protobufjs": "^7.3.2",
+    "braces": "^3.0.3",
     "brace-expansion": ">=2.0.2",
-    "minimatch": ">=3.1.2"
+    "minimatch": ">=3.1.2",
+    "postcss-selector-parser": "^7.1.6",
+    "undici": "^6.21.1",
+    "tar": "^7.4.3",
+    "uuid": "^11.0.3",
+    "esbuild": "^0.25.0"
   },
   "dependencies": {
-    "@ionic/vue": "^7.4.0",
-    "@ionic/vue-router": "^7.4.0",
+    "@ionic/vue": "^7.8.0",
+    "@ionic/vue-router": "^7.8.0",
     "core-js": "^3.37.0",
-    "firebase": "^12.16.0",
+    "firebase": "^10.12.0",
     "ionicons": "^7.2.2",
     "pinia": "^2.1.7",
     "vee-validate": "^4.13.0",
-    "vue": "^3.4.26",
-    "vue-router": "^4.5.0"
+    "vue": "^3.4.38",
+    "vue-router": "^4.3.3"
   },
   "devDependencies": {
-    "@capacitor/cli": "8.3.4",
-    "@capacitor/core": "8.3.4",
-    "@vitejs/plugin-vue": "^6.0.0",
-    "@vue/test-utils": "2.4.4",
+    "@capacitor/cli": "^6.1.0",
+    "@capacitor/core": "^6.1.0",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "@vue/test-utils": "^2.4.6",
     "autoprefixer": "^10.4.19",
-    "eslint": "^9.2.0",
-    "eslint-plugin-vue": "^9.24.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.26.0",
     "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.3",
-    "typescript": "^5.5.5",
-    "vite": "^8.1.4",
-    "vitest": "^4.1.7"
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.4.5",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.3"
   }
 }
