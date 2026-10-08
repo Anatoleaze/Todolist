@@ -8,15 +8,9 @@ Application de gestion de tâches construite avec Vue 3 et Ionic, avec sauvegard
 
 ## 📖 Description
 
-Projet personnel réalisé pour monter en compétence sur l'écosystème Vue 3 moderne (Composition API, Pinia) et découvrir Ionic pour le développement d'interfaces mobiles. L'application permet de créer, modifier et supprimer des tâches, avec une interface dynamique et réactive. Les données sont centralisées sur Firebase pour une synchronisation en temps réel, et l'application est conteneurisée (Docker + Nginx) pour être déployée en une seule commande.
+Projet personnel réalisé pour maîtriser l'écosystème Vue 3 moderne (Composition API, Pinia, Ionic) en concevant une application complète plutôt qu'en suivant des tutoriels isolés. L'application permet de gérer des tâches (création, modification, suppression) via une interface réactive et optimisée pour mobile comme sur ordinateur. Les données sont centralisées sur Firebase pour une synchronisation en temps réel et une conservation entre les sessions, tandis que la conteneurisation (Docker + Nginx) assure un déploiement rapide en une seule commande.
 
-Ce projet m'a permis d'apprendre à construire une application moderne, modulaire et réactive avec :
-- Vue 3
-- Vite
-- Pinia (gestion d'état)
-- Firebase
-- Docker
-- Ionic Vue
+Ce projet m'a permis de construire une application moderne de bout en bout, de l'interface jusqu'au déploiement.
 
 ---
 
